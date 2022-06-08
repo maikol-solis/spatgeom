@@ -1,6 +1,6 @@
 #' Geometric Sensitivity Analysis
-#' @param Ydat numeric vector of responses in a model.
-#' @param Xdat numeric matrix or data.frame of covariables.
+#' @param y numeric vector of responses in a model.
+#' @param x numeric matrix or data.frame of covariables.
 #' @return A list of class \code{topsa} with the following elements:
 #'
 #' \describe{
@@ -36,18 +36,18 @@
 #' @importFrom magrittr %>%
 #' @export
 
-alphastats <- function(Ydat,
-                       Xdat,
+alphastats <- function(y,
+                       x,
                        scale = FALSE,
                        nalphas = 100,
                        envelope = TRUE) {
-  Xdat <- as.data.frame(Xdat)
-  Ydat <- as.data.frame(Ydat)
+  x <- as.data.frame(x)
+  y <- as.data.frame(y)
 
   ANS <- list()
   ANS[["call"]] <- match.call()
-  ANS[["Xdat"]] <- Xdat
-  ANS[["Ydat"]] <- Ydat
+  ANS[["x"]] <- x
+  ANS[["y"]] <- y
 
   # Xr <- matrix()
   # Yr <- matrix()
@@ -75,9 +75,9 @@ alphastats <- function(Ydat,
   # }
 
 
-  par.names <- colnames(Xdat) # gets parameters names
-  if (is.null(colnames(Xdat))) {
-    par.names <- paste0("X", 1:ncol(Xdat))
+  par.names <- colnames(x) # gets parameters names
+  if (is.null(colnames(x))) {
+    par.names <- paste0("X", 1:ncol(x))
   }
 
 
@@ -87,12 +87,12 @@ alphastats <- function(Ydat,
 
   out_list <- parallel::mclapply(
     mc.cores = 6,
-    X = 1:ncol(Xdat),
+    X = 1:ncol(x),
     FUN = function(i) {
       message(paste0("Estimating R2 Geom for variable = ", i))
       estimate_curves(
-        X = Xdat[, i],
-        Y = Ydat[, 1],
+        x = x[, i],
+        y = y[, 1],
         scale = scale,
         alphamax = alphamax,
         nalphas = nalphas
@@ -101,7 +101,7 @@ alphastats <- function(Ydat,
   )
 
   if (envelope == TRUE) {
-    for (i in 1:ncol(Xdat)) {
+    for (i in 1:ncol(x)) {
       message(paste0("Estimating envelope for variable = ", i))
       envelope_data <-
         data.frame(
@@ -114,13 +114,13 @@ alphastats <- function(Ydat,
         mc.cores = 6,
         X = 1:40,
         FUN = function(k) {
-          N <- rpois(n = 1, lambda = out_list[[i]]$meanN)
-          X <- runif(N, min = min(Xdat[, i]), max = max(Xdat[, i]))
-          Y <- runif(N, min = min(Ydat[, 1]), max = max(Ydat[, 1]))
+          n <- rpois(n = 1, lambda = out_list[[i]]$meanN)
+          x <- runif(n, min = min(x[, i]), max = max(x[, i]))
+          y <- runif(n, min = min(y[, 1]), max = max(y[, 1]))
           enve <-
             estimate_curves(
-              X = X,
-              Y = Y,
+              x = x,
+              y = y,
               scale = scale,
               alphamax = alphamax,
               nalphas = nalphas,
@@ -147,15 +147,15 @@ alphastats <- function(Ydat,
 
 
 
-estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity = NULL) {
+estimate_curves <- function(x, y, scale, alphamax, nalphas, intensity = NULL) {
   if (scale) {
     pts <-
       sf::st_cast(sf::st_sfc(sf::st_multipoint(scales::rescale(cbind(
-        X, Y
+        x, y
       )))), "POINT")
   } else {
     pts <-
-      sf::st_cast(sf::st_sfc(sf::st_multipoint(cbind(X, Y))), "POINT")
+      sf::st_cast(sf::st_sfc(sf::st_multipoint(cbind(x, y))), "POINT")
   }
   bb <- sf::st_make_grid(pts, n = 1)
 
