@@ -35,6 +35,7 @@
 #' @importFrom methods is
 #' @importFrom magrittr %>%
 #' @export
+
 alphastats <-
   function(Ydat,
            Xdat,
@@ -144,41 +145,6 @@ alphastats <-
       }
     }
 
-
-
-
-    # sensitivity_results <- try(parallel::mclapply(
-    #   X = 1:ncol(Xdat),
-    #   FUN = estimate_sensitivity_index,
-    #   Ydat = Ydat,
-    #   Xdat = Xdat,
-    #   threshold = threshold.radius,
-    #   method = method,
-    #   mc.cores = mc.cores,
-    #   angle = angle),
-    # silent = T)
-
-
-
-    # if (is(sensitivity_results, 'try-error')) {
-    # sensitivity_results <-
-    #   lapply(
-    #     X = 1:ncol(Xdat),
-    #     FUN = estimate_sensitivity_index,
-    #     Ydat = Ydat,
-    #     Xdat = Xdat,
-    #     threshold = threshold.radius,
-    #     method = method,
-    #     angle = angle
-    #   )
-    # }
-
-
-    # for (i in 1:ncol(Xdat)) {
-    #   sensitivity_results[[i]]$xname <- colnames(Xdat)[i]
-    #   sensitivity_results[[i]]$yname <- colnames(Ydat)
-    # }
-
     ANS[["results"]] <- out_list
     class(ANS) <- "geomsensitivity"
     return(ANS)
@@ -224,25 +190,6 @@ estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity=NULL) {
       )
     )
   triangles <- triangles[order(triangles$alpha), ]
-
-
-
-  # max_length <- lapply(linestrings, function(x){ max(st_length(x[[1]]))})
-  #
-  # triangles <- data.frame(polygons, do.call(rbind, linestrings), max_length)
-  #
-  #
-  #   triangles <- dplyr::tibble(
-  #     geometry = sf::st_collection_extract(sf::st_sfc(v2))
-  #   )
-  #
-  #   triangles <- dplyr::tibble(
-  #     geometry = sf::st_collection_extract(sf::st_sfc(v2)),
-  #     segments = purrr::map(geometry, st_segment),
-  #     max_length = purrr::map_dbl(segments, ~ max(sf::st_length(.x$geometry)))
-  #   )
-
-
 
   geom_corr <- geom_sens <- geom_sens2 <- NULL
   # d <- dist(cbind(X, Y))
@@ -303,144 +250,3 @@ estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity=NULL) {
   )
 
 }
-
-
-
-# estimate_sensitivity_index <- function(ivar,
-#                                        Ydat,
-#                                        Xdat,
-#                                        dimension,
-#                                        # knearest,
-#                                        threshold,
-#                                        method,
-#                                        angle) {
-#   constructHOMOLOGY <-
-#     function(ivar,
-#              Ydat,
-#              Xdat,
-#              dimension,
-#              threshold,
-#              method,
-#              angle) {
-#       Y <- as.matrix(Ydat)
-#       X <- as.matrix(Xdat[, ivar]) # CAMBIO
-#
-#       idx <- order(X, Y)
-#       X <- X[idx, ]
-#       Y <- Y[idx, ]
-#
-#       YX <- scales::rescale(cbind(Y, X))
-#       Y <- YX[, 1]
-#       X <- YX[, 2]
-#       # X <- as.matrix(scales::rescale(X , to = c(0, 1)), ncol = 1)
-#       # Y <- as.matrix(scales::rescale(Y , to = c(0, 1)), ncol = 1)
-#
-#       # meanX <- mean(X)
-#       # meanY <- mean(Y)
-#       # #Se centra para el calculo
-#       # XsYs <- data.frame(X - meanX, Y - meanY)
-#       # Rotated <- as.matrix(XsYs) %*% RotMat(-angle)
-#       # #Se descentra para el calculo
-#       # X <- Rotated[, 1] + meanX
-#       # Y <- Rotated[, 2] + meanY
-#       #
-#       # YX <- scales::rescale(cbind(Y, X))
-#       # Y <- YX[, 1]
-#       # X <- YX[, 2]
-#
-#
-#
-#       if (method == "Alpha") {
-#         Filtration <-
-#           TDA::alphaComplexFiltration(cbind(Y, X), printProgress = FALSE)
-#         cmplx <-
-#           Filtration$cmplx[Filtration$values <= threshold[ivar]]
-#       } else if (method == "VR") {
-#         Filtration <- TDA::ripsFiltration(
-#           cbind(Y, X),
-#           maxdimension = 1,
-#           maxscale = threshold[ivar],
-#           printProgress = FALSE
-#         )
-#         cmplx <- Filtration$cmplx
-#       } else {
-#         Filtration <- NULL
-#         stop("No method defined")
-#       }
-#
-#
-#       idx_triangles <- lengths(Filtration$cmplx) == 3
-#       clq <- cmplx[idx_triangles]
-#       # clq <- igraph::cliques(graphBase, min = 3, max = 3)
-#       clq <- matrix(unlist(clq), ncol = 3, byrow = TRUE)
-#       clq <- cbind(clq, clq[, 1])
-#       clq <- clq[order(clq[, 1], -clq[, 2], clq[, 3]), ]
-#
-#       clq_polygons <-
-#         lapply(
-#           X = seq_len(nrow(clq)),
-#           FUN = function(i) {
-#             p <- data.frame(id = i, x = X[clq[i, ]], y = Y[clq[i, ]])
-#           }
-#         )
-#
-#       clq_polygons <- do.call("rbind", clq_polygons)
-#
-#       clq_polygons <-
-#         sfheaders::sfc_polygon(clq_polygons, polygon_id = "id")
-#
-#
-#
-#       clq_polygons <- sf::st_union(clq_polygons)
-#       clq_polygons <- sf::st_cast(clq_polygons, "POLYGON")
-#       clq_polygons <- clq_polygons[sf::st_area(clq_polygons) > 0.01]
-#       clq_polygons <- sf::st_buffer(clq_polygons, -0.01)
-#       clq_polygons <- sf::st_buffer(clq_polygons, 0.01)
-#       clq_polygons <- sf::st_union(clq_polygons)
-#
-#
-#
-#       return(
-#         list(
-#           manifold_unioned = clq_polygons,
-#           # neigborhood.distance = neigborhood.distance,
-#           threshold = threshold[ivar]
-#           # Number.Edges.per.Point = npositives
-#         )
-#       )
-#     } # end-function-constructor
-#
-#
-#
-#   H <- constructHOMOLOGY(ivar, Ydat, Xdat, dimension, threshold, method, angle)
-#   mp_union <- H[["manifold_unioned"]]
-#
-#   mp_reflection <- estimate_symmetric_reflection(mp_union)
-#
-#   bb <- sf::st_make_grid(x = mp_union, n = 1)
-#
-#   mp_sym_difference <-
-#     sf::st_sym_difference(mp_union, mp_reflection)
-#
-#
-#   H$sym_difference <- mp_sym_difference
-#   H$sym_reflection <- mp_reflection
-#
-#   Symmetric.Diff.Area <- sf::st_area(mp_sym_difference)
-#   Manifold.Area <- sf::st_area(mp_union)
-#   Box.Area <- sf::st_area(bb)
-#
-#   return(
-#     list(
-#       threshold = H[["threshold"]],
-#       Number.Edges.per.Point = H[["Number.Edges.per.Point"]],
-#       Neigborhood.Distance = H[["neigborhood.distance"]],
-#       Manifold.Area = Manifold.Area,
-#       Box.Area = Box.Area,
-#       Geometric.R2 = 1 - Manifold.Area / Box.Area,
-#       Symmetric.Diff.Area = Symmetric.Diff.Area,
-#       Geometric.Sensitivity = Symmetric.Diff.Area / (2 * Manifold.Area),
-#       homology = H
-#     )
-#   )
-# }
