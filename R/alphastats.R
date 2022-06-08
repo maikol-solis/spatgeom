@@ -36,17 +36,11 @@
 #' @importFrom magrittr %>%
 #' @export
 
-alphastats <-
-  function(Ydat,
-           Xdat,
-           scale = FALSE,
-           alphamax = 1,
-           nalphas = 100,
-           envelope = TRUE) {
-    if (length(alphamax) == 1) {
-      alphamax <- rep(alphamax, ncol(Xdat))
-    }
-    # FALTAN CONDSICIONES
+alphastats <- function(Ydat,
+                       Xdat,
+                       scale = FALSE,
+                       nalphas = 100,
+                       envelope = TRUE) {
 
     Xdat <- as.data.frame(Xdat)
     Ydat <- as.data.frame(Ydat)
