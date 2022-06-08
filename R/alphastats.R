@@ -41,114 +41,113 @@ alphastats <- function(Ydat,
                        scale = FALSE,
                        nalphas = 100,
                        envelope = TRUE) {
+  Xdat <- as.data.frame(Xdat)
+  Ydat <- as.data.frame(Ydat)
 
-    Xdat <- as.data.frame(Xdat)
-    Ydat <- as.data.frame(Ydat)
+  ANS <- list()
+  ANS[["call"]] <- match.call()
+  ANS[["Xdat"]] <- Xdat
+  ANS[["Ydat"]] <- Ydat
 
-    ANS <- list()
-    ANS[["call"]] <- match.call()
-    ANS[["Xdat"]] <- Xdat
-    ANS[["Ydat"]] <- Ydat
-
-    # Xr <- matrix()
-    # Yr <- matrix()
-    # l <- lapply(seq_along(Xdat), function(k) {
-    #   scales::rescale(cbind(Xdat[, k], Ydat[, 1]))
-    # })
-    #
-    # lx <- lapply(l, function(x)
-    #   x[, 1])
-    #
-    # Xr <- as.data.frame(do.call("cbind", lx))
-    # Yr <- as.data.frame(sapply(Ydat, scales::rescale))
-    # ANS[['Xr']] <- Xr
-    # ANS[['Yr']] <- Yr
-    # ANS[["Xr"]] <- as.data.frame(lapply(Xdat, scales::rescale))
-    # ANS[["Yr"]] <- as.data.frame(lapply(Ydat, scales::rescale))
-    # ANS[["angle"]] <- angle
-    #
-
-
-    # if (length(threshold.radius) == 1) {
-    #   threshold.radius <- rep(threshold.radius, ncol(Xdat))
-    # } else if (length(threshold.radius) < ncol(Xdat)) {
-    #   stop("Please provide a numeric threshold vector of size 1 or ncol(Xdat)")
-    # }
+  # Xr <- matrix()
+  # Yr <- matrix()
+  # l <- lapply(seq_along(Xdat), function(k) {
+  #   scales::rescale(cbind(Xdat[, k], Ydat[, 1]))
+  # })
+  #
+  # lx <- lapply(l, function(x)
+  #   x[, 1])
+  #
+  # Xr <- as.data.frame(do.call("cbind", lx))
+  # Yr <- as.data.frame(sapply(Ydat, scales::rescale))
+  # ANS[['Xr']] <- Xr
+  # ANS[['Yr']] <- Yr
+  # ANS[["Xr"]] <- as.data.frame(lapply(Xdat, scales::rescale))
+  # ANS[["Yr"]] <- as.data.frame(lapply(Ydat, scales::rescale))
+  # ANS[["angle"]] <- angle
+  #
 
 
-    par.names <- colnames(Xdat) # gets parameters names
-    if (is.null(colnames(Xdat))) {
-      par.names <- paste0("X", 1:ncol(Xdat))
-    }
+  # if (length(threshold.radius) == 1) {
+  #   threshold.radius <- rep(threshold.radius, ncol(Xdat))
+  # } else if (length(threshold.radius) < ncol(Xdat)) {
+  #   stop("Please provide a numeric threshold vector of size 1 or ncol(Xdat)")
+  # }
 
 
-    message("Index estimation")
-
-
-
-    out_list <- parallel::mclapply(
-      mc.cores = 6,
-      X = 1:ncol(Xdat),
-      FUN = function(i) {
-        message(paste0("Estimating R2 Geom for variable = ", i))
-        estimate_curves(
-          X = Xdat[, i],
-          Y = Ydat[, 1],
-          scale = scale,
-          alphamax = alphamax,
-          nalphas = nalphas
-        )
-      }
-    )
-
-    if (envelope == TRUE) {
-      for (i in 1:ncol(Xdat)) {
-        message(paste0("Estimating envelope for variable = ", i))
-        envelope_data <-
-          data.frame(y = numeric(),
-                     x = numeric(),
-                     nsim = numeric())
-
-        envelope_data <-  parallel::mclapply(
-          mc.cores = 6,
-          X = 1:40,
-          FUN = function(k) {
-            N <- rpois(n = 1, lambda = out_list[[i]]$meanN)
-            X <- runif(N, min = min(Xdat[, i]), max = max(Xdat[, i]))
-            Y <- runif(N, min = min(Ydat[, 1]), max = max(Ydat[, 1]))
-            enve <-
-              estimate_curves(
-                X = X,
-                Y = Y,
-                scale = scale,
-                alphamax = alphamax,
-                nalphas = nalphas,
-                intensity = out_list[[i]]$intensity
-              )
-            enve_approx <-
-              approx(
-                enve$data_frame_triangles$alpha,
-                y = enve$data_frame_triangles$geom_corr,
-                xout = out_list[[i]]$data_frame_triangles$alpha
-              )
-            data.frame(enve_approx, nsim = k)
-          }
-        )
-        envelope_data <- do.call("rbind", envelope_data)
-        out_list[[i]]$envelope_data <- envelope_data
-      }
-    }
-
-    ANS[["results"]] <- out_list
-    class(ANS) <- "geomsensitivity"
-    return(ANS)
+  par.names <- colnames(Xdat) # gets parameters names
+  if (is.null(colnames(Xdat))) {
+    par.names <- paste0("X", 1:ncol(Xdat))
   }
 
 
+  message("Index estimation")
 
-estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity=NULL) {
 
 
+  out_list <- parallel::mclapply(
+    mc.cores = 6,
+    X = 1:ncol(Xdat),
+    FUN = function(i) {
+      message(paste0("Estimating R2 Geom for variable = ", i))
+      estimate_curves(
+        X = Xdat[, i],
+        Y = Ydat[, 1],
+        scale = scale,
+        alphamax = alphamax,
+        nalphas = nalphas
+      )
+    }
+  )
+
+  if (envelope == TRUE) {
+    for (i in 1:ncol(Xdat)) {
+      message(paste0("Estimating envelope for variable = ", i))
+      envelope_data <-
+        data.frame(
+          y = numeric(),
+          x = numeric(),
+          nsim = numeric()
+        )
+
+      envelope_data <- parallel::mclapply(
+        mc.cores = 6,
+        X = 1:40,
+        FUN = function(k) {
+          N <- rpois(n = 1, lambda = out_list[[i]]$meanN)
+          X <- runif(N, min = min(Xdat[, i]), max = max(Xdat[, i]))
+          Y <- runif(N, min = min(Ydat[, 1]), max = max(Ydat[, 1]))
+          enve <-
+            estimate_curves(
+              X = X,
+              Y = Y,
+              scale = scale,
+              alphamax = alphamax,
+              nalphas = nalphas,
+              intensity = out_list[[i]]$intensity
+            )
+          enve_approx <-
+            approx(
+              enve$data_frame_triangles$alpha,
+              y = enve$data_frame_triangles$geom_corr,
+              xout = out_list[[i]]$data_frame_triangles$alpha
+            )
+          data.frame(enve_approx, nsim = k)
+        }
+      )
+      envelope_data <- do.call("rbind", envelope_data)
+      out_list[[i]]$envelope_data <- envelope_data
+    }
+  }
+
+  ANS[["results"]] <- out_list
+  class(ANS) <- "geomsensitivity"
+  return(ANS)
+}
+
+
+
+estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity = NULL) {
   if (scale) {
     pts <-
       sf::st_cast(sf::st_sfc(sf::st_multipoint(scales::rescale(cbind(
@@ -215,7 +214,7 @@ estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity=NULL) {
           sf::st_area(poly_sym_difference) / (2 * sf::st_area(poly_union))
         geom_sens2 <- sf::st_area(poly_sym_difference_bb) /
           sf::st_area(bb)
-      } else{
+      } else {
         geom_corr <- 1
         geom_sens <- 1
       }
@@ -230,9 +229,11 @@ estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity=NULL) {
     x$geom_sens
   })
 
-  data_frame_triangles  <-  data.frame(alpha = alpha_seq,
-                                       geom_corr,
-                                       geom_sens)
+  data_frame_triangles <- data.frame(
+    alpha = alpha_seq,
+    geom_corr,
+    geom_sens
+  )
 
   return(
     list(
@@ -242,5 +243,4 @@ estimate_curves <- function(X, Y, scale, alphamax, nalphas, intensity=NULL) {
       meanN = sf::st_area(bb) * intensity
     )
   )
-
 }
