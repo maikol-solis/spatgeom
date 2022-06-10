@@ -31,36 +31,39 @@ estimate_symmetric_reflection <- function(polygon) {
 #' @export
 #'
 #' @examples
-#'
-#' @importFrom magrittr %>%
 st_segment <- function(x) {
-  sf::st_cast(x, "LINESTRING") %>%
-    sf::st_coordinates() %>%
-    dplyr::as_tibble() %>%
-    dplyr::rename_all(tolower) %>%
-    dplyr::group_by(l1) %>%
-    dplyr::mutate(x1 = dplyr::lead(x), y1 = dplyr::lead(y)) %>%
-    stats::na.omit() %>%
-    dplyr::mutate(
-      geometry = purrr::pmap(list(x, x1, y, y1), ~ sf::st_linestring(matrix(
-        c(..1, ..2, ..3, ..4), 2
-      ))),
-      geometry = sf::st_as_sfc(geometry)
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(geometry)
+  segment <- sf::st_cast(x, "LINESTRING")
+  segment <- sf::st_coordinates(segment)
+  segment <- dplyr::as_tibble(segment)
+  segment <- dplyr::rename_with(segment, .fn = tolower)
+  segment <- dplyr::group_by(segment, l1)
+  segment <- dplyr::mutate(segment, x1 = dplyr::lead(x), y1 = dplyr::lead(y))
+  segment <- stats::na.omit(segment)
+  segment <- dplyr::mutate(segment,
+    geometry = purrr::pmap(
+      list(x, x1, y, y1),
+      ~ sf::st_linestring(matrix(c(..1, ..2, ..3, ..4), 2))
+    ),
+    geometry = sf::st_as_sfc(geometry)
+  )
+  segment <- dplyr::ungroup(segment)
+  segment <- dplyr::select(segment, geometry)
+  ## RETURN
+  segment
 }
 
 
 RotMat <- function(angle) {
-  matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)), nrow = 2, ncol =
-           2)
+  matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)),
+    nrow = 2, ncol =
+      2
+  )
 }
 
 
 num_deriv <- function(y, x) {
   if (length(x) != length(y)) {
-    stop('x and y vectors must have equal length')
+    stop("x and y vectors must have equal length")
   }
 
   n <- length(x)
