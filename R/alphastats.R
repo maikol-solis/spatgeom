@@ -122,7 +122,7 @@ alphastats <- function(y,
             )
           enve_approx <-
             approx(
-              enve$data_frame_triangles$alpha,
+              x = enve$data_frame_triangles$alpha,
               y = enve$data_frame_triangles$geom_corr,
               xout = out_list[[i]]$data_frame_triangles$alpha
             )
