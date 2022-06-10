@@ -75,10 +75,6 @@ alphastats <- function(y,
   # }
 
 
-  par.names <- colnames(x) # gets parameters names
-  if (is.null(colnames(x))) {
-    par.names <- paste0("X", 1:ncol(x))
-  }
 
 
   message("Index estimation")
