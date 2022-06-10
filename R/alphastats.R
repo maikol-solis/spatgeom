@@ -83,7 +83,7 @@ alphastats <- function(y,
 
   out_list <- parallel::mclapply(
     mc.cores = 6,
-    X = 1:ncol(x),
+    X = seq_len(ncol(x)),
     FUN = function(i) {
       message(paste0("Estimating R2 Geom for variable = ", i))
       estimate_curves(
@@ -97,7 +97,7 @@ alphastats <- function(y,
   )
 
   if (envelope == TRUE) {
-    for (i in 1:ncol(x)) {
+    for (i in seq_len(ncol(x))) {
       message(paste0("Estimating envelope for variable = ", i))
       envelope_data <-
         data.frame(
@@ -108,7 +108,7 @@ alphastats <- function(y,
 
       envelope_data <- parallel::mclapply(
         mc.cores = 6,
-        X = 1:40,
+        X = seq_len(40),
         FUN = function(k) {
           n <- rpois(1, lambda = out_list[[i]]$mean_n)
           x <- runif(n, min = min(x[, i]), max = max(x[, i]))
