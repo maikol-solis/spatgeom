@@ -44,7 +44,7 @@ alphastats <- function(y,
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
-  ANS <- list()
+  ANS <- list() # nolint
   ANS[["call"]] <- match.call()
   ANS[["x"]] <- x
   ANS[["y"]] <- y
@@ -135,7 +135,7 @@ alphastats <- function(y,
   }
 
   ANS[["results"]] <- out_list
-  class(ANS) <- "geomsensitivity"
+  class(ANS) <- "geomspatial"
   return(ANS)
 }
 
