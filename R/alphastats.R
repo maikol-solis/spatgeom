@@ -31,7 +31,7 @@
 #'
 #' X <- matrix(runif(3 * 50, -pi, pi), ncol = 3)
 #' Y <- ishigami.fun(X)
-#' estimation <- topsa(Ydat = Y, Xdat = X, method = "Alpha")
+#' estimation <- topsa(y = Y, x = X, method = "Alpha")
 #' @importFrom methods is
 #' @importFrom magrittr %>%
 #' @export
@@ -51,27 +51,27 @@ alphastats <- function(y,
 
   # Xr <- matrix()
   # Yr <- matrix()
-  # l <- lapply(seq_along(Xdat), function(k) {
-  #   scales::rescale(cbind(Xdat[, k], Ydat[, 1]))
+  # l <- lapply(seq_along(x), function(k) {
+  #   scales::rescale(cbind(x[, k], y[, 1]))
   # })
   #
   # lx <- lapply(l, function(x)
   #   x[, 1])
   #
   # Xr <- as.data.frame(do.call("cbind", lx))
-  # Yr <- as.data.frame(sapply(Ydat, scales::rescale))
+  # Yr <- as.data.frame(sapply(y, scales::rescale))
   # ANS[['Xr']] <- Xr
   # ANS[['Yr']] <- Yr
-  # ANS[["Xr"]] <- as.data.frame(lapply(Xdat, scales::rescale))
-  # ANS[["Yr"]] <- as.data.frame(lapply(Ydat, scales::rescale))
+  # ANS[["Xr"]] <- as.data.frame(lapply(x, scales::rescale))
+  # ANS[["Yr"]] <- as.data.frame(lapply(y, scales::rescale))
   # ANS[["angle"]] <- angle
   #
 
 
   # if (length(threshold.radius) == 1) {
-  #   threshold.radius <- rep(threshold.radius, ncol(Xdat))
-  # } else if (length(threshold.radius) < ncol(Xdat)) {
-  #   stop("Please provide a numeric threshold vector of size 1 or ncol(Xdat)")
+  #   threshold.radius <- rep(threshold.radius, ncol(x))
+  # } else if (length(threshold.radius) < ncol(x)) {
+  #   stop("Please provide a numeric threshold vector of size 1 or ncol(x)")
   # }
 
 
