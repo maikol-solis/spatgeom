@@ -110,7 +110,7 @@ alphastats <- function(y,
         mc.cores = 6,
         X = 1:40,
         FUN = function(k) {
-          n <- rpois(n = 1, lambda = out_list[[i]]$meanN)
+          n <- rpois(1, lambda = out_list[[i]]$mean_n)
           x <- runif(n, min = min(x[, i]), max = max(x[, i]))
           y <- runif(n, min = min(y[, 1]), max = max(y[, 1]))
           enve <-
@@ -236,7 +236,7 @@ estimate_curves <- function(x, y, scale, alphamax, nalphas, intensity = NULL) {
       triangles = triangles,
       data_frame_triangles = data_frame_triangles,
       intensity = intensity,
-      meanN = sf::st_area(bb) * intensity
+      mean_n = sf::st_area(bb) * intensity
     )
   )
 }
