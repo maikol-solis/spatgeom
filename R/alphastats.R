@@ -1,7 +1,6 @@
 #' Geometric Sensitivity Analysis
 #' @param y numeric vector of responses in a model.
 #' @param x numeric matrix or data.frame of covariables.
-#' @return A list of class \code{topsa} with the following elements:
 #'
 #' \describe{
 #' \item{\strong{call}}{The function call.}
@@ -135,7 +134,7 @@ alphastats <- function(y,
   }
 
   ANS[["results"]] <- out_list
-  class(ANS) <- "geomspatial"
+  class(ANS) <- "spatgeom"
   return(ANS)
 }
 
