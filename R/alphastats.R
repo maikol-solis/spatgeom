@@ -90,7 +90,6 @@ alphastats <- function(y,
         x = x[, i],
         y = y[, 1],
         scale = scale,
-        alphamax = alphamax,
         nalphas = nalphas
       )
     }
@@ -118,7 +117,6 @@ alphastats <- function(y,
               x = x,
               y = y,
               scale = scale,
-              alphamax = alphamax,
               nalphas = nalphas,
               intensity = out_list[[i]]$intensity
             )
@@ -143,7 +141,7 @@ alphastats <- function(y,
 
 
 
-estimate_curves <- function(x, y, scale, alphamax, nalphas, intensity = NULL) {
+estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
   if (scale) {
     pts <-
       sf::st_cast(sf::st_sfc(sf::st_multipoint(scales::rescale(cbind(
