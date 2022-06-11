@@ -8,8 +8,8 @@ estimate_symmetric_reflection <- function(polygon) {
   #
   # polygon_coords <- sf::st_coordinates(polygon)
   #
-  affine_transformation <-  matrix(c(1, 0, 0, -1), 2, 2)
-  cntrd = sf::st_centroid(polygon)
+  affine_transformation <- matrix(c(1, 0, 0, -1), 2, 2)
+  cntrd <- sf::st_centroid(polygon)
 
   polygon_reflected <-
     (polygon - cntrd) * affine_transformation + cntrd
@@ -46,8 +46,7 @@ st_segment <- function(x) {
 
 RotMat <- function(angle) {
   matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)),
-    nrow = 2, ncol =
-      2
+    nrow = 2, ncol = 2
   )
 }
 
@@ -77,5 +76,4 @@ num_deriv <- function(y, x) {
   fdx[n] <- (y[n] - y[n - 1]) / (x[n] - x[n - 1])
 
   return(fdx)
-
 }
