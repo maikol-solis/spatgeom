@@ -178,7 +178,6 @@ estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
   triangles <- triangles[order(triangles$alpha), ]
 
   geom_corr <- geom_sens <- geom_sens2 <- NULL
-  # d <- dist(cbind(X, Y))
   d_min <- min(triangles$alpha)
   d_max <- max(triangles$alpha)
   alpha_seq <- seq(d_min, d_max * 1.1, length.out = nalphas)
@@ -187,9 +186,6 @@ estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
     X = alpha_seq,
     FUN = function(s) {
       alpha_shape <- subset(triangles, alpha <= s)
-
-      # alpha_shape <- triangles %>%
-      #   dplyr::filter(max_length < 2 * alpha_seq[s])
       if (nrow(alpha_shape) > 0) {
         poly_union <- sf::st_union(alpha_shape$geometry)
         poly_reflection <- estimate_symmetric_reflection(poly_union)
