@@ -199,7 +199,7 @@ estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
     )
   triangles <- triangles[order(triangles$alpha), ]
 
-  geom_corr <- geom_sens <- geom_sens2 <- NULL
+  geom_corr <- geom_sens <- NULL
   d_min <- min(triangles$alpha)
   d_max <- max(triangles$alpha)
   alpha_seq <- seq(d_min, d_max * 1.1, length.out = nalphas)
