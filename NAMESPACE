@@ -2,10 +2,9 @@
 
 export(alphastats)
 export(barcode_plotter)
+export(plot_alpha_shape)
 export(plot_geom_curves)
 export(print_topsa)
-export(st_segment)
-importFrom(magrittr,"%>%")
 importFrom(methods,is)
 importFrom(stats,median)
 importFrom(stats,quantile)

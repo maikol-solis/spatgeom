@@ -2,49 +2,74 @@
 % Please edit documentation in R/alphastats.R
 \name{alphastats}
 \alias{alphastats}
-\title{Geometric Sensitivity Analysis}
+\title{Geometric Spatial Point Pattern Analysis}
 \usage{
-alphastats(Ydat, Xdat, mc.cores = 2)
+alphastats(y, x, scale = FALSE, nalphas = 100, envelope = FALSE)
 }
 \arguments{
-\item{Ydat}{numeric vector of responses in a model.}
+\item{y}{numeric vector of responses in a model.}
 
-\item{Xdat}{numeric matrix or data.frame of covariables.}
+\item{x}{numeric matrix or data.frame of covariables.}
+
+\item{scale}{boolean to make the estimations with scaled variables. Default
+\code{FALSE}.}
+
+\item{nalphas}{a single number for the number of alphas generated between the
+minimum and maximum edge distance on the Delanauy triangulation.}
+
+\item{envelope}{boolean to determine if the Monte-Carlo is estimated. Default
+\code{FALSE}.}
 }
 \value{
-A list of class \code{topsa} with the following elements:
+A list of class \code{spatgeom} with  the following elements:
+of size \code{ncol{x}}. Each
+element of the list has the following elements:
 
 \describe{
+
 \item{\strong{call}}{The function call.}
-\item{\strong{Xdat}}{\code{X} input.}
-\item{\strong{Ydat}}{\code{Y} output.}
-\item{\strong{dimension}}{dimension to estimate the homology order.}
-\item{\strong{threshold}}{cutoff level for the radius or area.}
-\item{\strong{results}}{A list for each variable with:
+
+\item{\strong{x}}{\code{x} input.}
+
+\item{\strong{y}}{\code{x} output.}
+
+\item{\strong{results}}{A list of size \code{ncol} corresponding to each
+column of \code{x}. Each element of the list has:
+
 \describe{
-\item{\strong{threshold}}{threshold used to limit the radius or area.}
-\item{\strong{Manifold_Area}}{geometrical area of the estimated manifold.}
-\item{\strong{Box.Area}}{geometrical area of the estimated manifold.}
-\item{\strong{Geometric.R2}}{geometric correlation between each
-\code{x} and \code{y}.}
-\item{\strong{Geometric.Sensitivity}}{symmetric sensitivity
-index of each estimated manifold.}
-\item{\strong{manifold_plot}}{a \code{sf}
-object with the estimated manifold.}
-} } }
+
+\item{\strong{triangles}}{a data frame of class \code{sfc} (see
+\code{\link[sf:sf]{sf::st_sf()}})with columns \code{geometry}, \code{segments},
+\code{max_length} and \code{alpha}. The data.frame contains the whole
+Delanauy triangulation for the corresponding column of \code{x} and \code{y}.}
+
+\item{\strong{data_frame_triangles}}{a data frame with columns \code{alpha}
+and \code{geom_corr}. The \code{alpha} column is a numeric vector of size
+\code{nalphas} from the minimum to the maximum distance between points
+estimated in the data. The \code{geom_corr} column is the value \code{1 -
+ (alpha-shape Area)/(containing box Area).}}
+
+\item{\strong{intensity}}{the intensity estimated for the corresponding
+column of \code{x} and \code{y}.}
+
+\item{\strong{mean_n}}{the mean number of points in the point process.}
+
+}}
 }
 \description{
-Geometric Sensitivity Analysis
+Geometric Spatial Point Pattern Analysis
 }
 \examples{
 
-ishigami.fun <- function(X) {
-  A <- 7
-  B <- 0.1
-  sin(X[, 1]) + A * sin(X[, 2])^2 + B * X[, 3]^4 * sin(X[, 1])
-}
+n <- 100
+a <- -1
+b <- 1
+theta <- runif(n, 0, 2 * pi)
+r <- (sqrt(runif(n))) * (0.5) + 0.5
+X1 <- r * cos(theta)
+X2 <- runif(n, a, b)
+Y <- data.frame(Y = r * sin(theta))
+X <- data.frame(X1, X2)
 
-X <- matrix(runif(3 * 50, -pi, pi), ncol = 3)
-Y <- ishigami.fun(X)
-estimation <- topsa(Ydat = Y, Xdat = X, method = "Alpha")
+estimation <- alphastats(y = Y, x = X)
 }

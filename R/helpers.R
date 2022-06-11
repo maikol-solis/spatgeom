@@ -1,6 +1,5 @@
 
 
-#' @export
 estimate_symmetric_reflection <- function(polygon) {
   # true_polygon_coords <- sf::st_coordinates(polygon)
   #
@@ -23,14 +22,6 @@ estimate_symmetric_reflection <- function(polygon) {
 }
 
 
-#' Title
-#'
-#' @param x
-#'
-#' @return
-#' @export
-#'
-#' @examples
 st_segment <- function(x) {
   segment <- sf::st_cast(x, "LINESTRING")
   segment <- sf::st_coordinates(segment)

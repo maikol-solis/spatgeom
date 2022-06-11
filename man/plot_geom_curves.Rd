@@ -4,7 +4,7 @@
 \alias{plot_geom_curves}
 \title{plot \code{topsa} objects}
 \usage{
-plot_geom_curves(x)
+plot_geom_curves(x, type = c("curve", "deriv"), font_size = 12)
 }
 \arguments{
 \item{topsaObj}{an object of class \code{topsa}}
