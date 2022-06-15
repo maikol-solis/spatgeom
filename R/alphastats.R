@@ -81,8 +81,8 @@ alphastats <- function(y,
     FUN = function(i) {
       message(paste0("Estimating R2 Geom for variable = ", i))
       estimate_curves(
-        x = x[, i],
-        y = y[, 1],
+        x1 = x[, i],
+        x2 = y[, 1],
         scale = scale,
         nalphas = nalphas
       )
@@ -108,8 +108,8 @@ alphastats <- function(y,
           y <- runif(n, min = min(y[, 1]), max = max(y[, 1]))
           enve <-
             estimate_curves(
-              x = x,
-              y = y,
+              x1 = x,
+              x2 = y,
               scale = scale,
               nalphas = nalphas,
               intensity = out_list[[i]]$intensity
@@ -136,14 +136,24 @@ alphastats <- function(y,
 
 
 estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
+}
+
+
+
+
+estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
   if (scale) {
-    pts <-
-      sf::st_cast(sf::st_sfc(sf::st_multipoint(scales::rescale(cbind(
-        x, y
-      )))), "POINT")
+    pts <- sf::st_cast(
+      sf::st_sfc(
+        sf::st_multipoint(scales::rescale(cbind(x1, x2)))
+      ), "POINT"
+    )
   } else {
-    pts <-
-      sf::st_cast(sf::st_sfc(sf::st_multipoint(cbind(x, y))), "POINT")
+    pts <- sf::st_cast(
+      sf::st_sfc(
+        sf::st_multipoint(cbind(x1, x2))
+      ), "POINT"
+    )
   }
   bb <- sf::st_make_grid(pts, n = 1)
 
