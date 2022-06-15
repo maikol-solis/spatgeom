@@ -61,7 +61,9 @@ alphastats <- function(y,
                        x,
                        scale = FALSE,
                        nalphas = 100,
-                       envelope = FALSE) {
+                       envelope = FALSE,
+                       mc_cores = 2) {
+  UseMethod("alphastats")
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
@@ -103,7 +105,7 @@ alphastats <- function(y,
 
 
   out_list <- parallel::mclapply(
-    mc.cores = 6,
+    mc.cores = mc_cores,
     X = seq_len(ncol(x)),
     FUN = function(i) {
       message(paste0("Estimating R2 Geom for variable = ", i))
@@ -127,7 +129,7 @@ alphastats <- function(y,
         )
 
       envelope_data <- parallel::mclapply(
-        mc.cores = 6,
+        mc.cores = mc_cores,
         X = seq_len(40),
         FUN = function(k) {
           n <- rpois(1, lambda = out_list[[i]]$mean_n)
