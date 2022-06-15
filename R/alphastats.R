@@ -73,37 +73,7 @@ alphastats <- function(y,
   ANS[["x"]] <- x
   ANS[["y"]] <- y
 
-  # Xr <- matrix()
-  # Yr <- matrix()
-  # l <- lapply(seq_along(x), function(k) {
-  #   scales::rescale(cbind(x[, k], y[, 1]))
-  # })
-  #
-  # lx <- lapply(l, function(x)
-  #   x[, 1])
-  #
-  # Xr <- as.data.frame(do.call("cbind", lx))
-  # Yr <- as.data.frame(sapply(y, scales::rescale))
-  # ANS[['Xr']] <- Xr
-  # ANS[['Yr']] <- Yr
-  # ANS[["Xr"]] <- as.data.frame(lapply(x, scales::rescale))
-  # ANS[["Yr"]] <- as.data.frame(lapply(y, scales::rescale))
-  # ANS[["angle"]] <- angle
-  #
-
-
-  # if (length(threshold.radius) == 1) {
-  #   threshold.radius <- rep(threshold.radius, ncol(x))
-  # } else if (length(threshold.radius) < ncol(x)) {
-  #   stop("Please provide a numeric threshold vector of size 1 or ncol(x)")
-  # }
-
-
-
-
   message("Index estimation")
-
-
 
   out_list <- parallel::mclapply(
     mc.cores = mc_cores,
