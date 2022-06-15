@@ -58,13 +58,18 @@
 #' estimation <- alphastats(y = Y, x = X)
 #' @export
 
-alphastats <- function(y,
-                       x,
+
+alphastats <- function(x, ...,
                        scale = FALSE,
                        nalphas = 100,
                        envelope = FALSE,
                        mc_cores = 2) {
   UseMethod("alphastats")
+}
+
+
+
+alphastats.xy <- function(x, y, ...) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
@@ -135,7 +140,9 @@ alphastats <- function(y,
 
 
 
-estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
+
+alphastats.default <- function(x, ...) {
+
 }
 
 
