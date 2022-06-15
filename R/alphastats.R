@@ -28,7 +28,8 @@
 #' \item{\strong{triangles}}{a data frame of class \code{sfc} (see
 #' [`sf::st_sf()`])with columns \code{geometry}, \code{segments},
 #' \code{max_length} and \code{alpha}. The data.frame contains the whole
-#' Delanauy triangulation for the corresponding column of \code{x} and \code{y}.}
+#' Delanauy triangulation for the corresponding column of \code{x} and
+#' \code{y}.}
 #'
 #' \item{\strong{data_frame_triangles}}{a data frame with columns \code{alpha}
 #'  and \code{geom_corr}. The \code{alpha} column is a numeric vector of size
