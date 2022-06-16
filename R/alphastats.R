@@ -73,10 +73,10 @@ alphastats.xy <- function(x, y, ...) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
-  ANS <- list() # nolint
-  ANS[["call"]] <- match.call()
-  ANS[["x"]] <- x
-  ANS[["y"]] <- y
+  ans <- list()
+  ans[["call"]] <- match.call()
+  ans[["x"]] <- x
+  ans[["y"]] <- y
 
   message("Index estimation")
 
@@ -133,9 +133,9 @@ alphastats.xy <- function(x, y, ...) {
     }
   }
 
-  ANS[["results"]] <- out_list
-  class(ANS) <- "spatgeom"
-  return(ANS)
+  ans[["results"]] <- out_list
+  class(ans) <- "spatgeom"
+  return(ans)
 }
 
 
