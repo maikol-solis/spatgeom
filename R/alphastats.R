@@ -112,9 +112,9 @@ alphastats.xy <- function(x, y,
         mc.cores = mc_cores,
         X = seq_len(40),
         FUN = function(k) {
-          n <- rpois(1, lambda = out_list[[i]]$mean_n)
-          x <- runif(n, min = min(x[, i]), max = max(x[, i]))
-          y <- runif(n, min = min(y[, 1]), max = max(y[, 1]))
+          n <- stats::rpois(1, lambda = out_list[[i]]$mean_n)
+          x <- stats::runif(n, min = min(x[, i]), max = max(x[, i]))
+          y <- stats::runif(n, min = min(y[, 1]), max = max(y[, 1]))
           enve <-
             estimate_curves(
               x1 = x,
@@ -124,7 +124,7 @@ alphastats.xy <- function(x, y,
               intensity = out_list[[i]]$intensity
             )
           enve_approx <-
-            approx(
+            stats::approx(
               x = enve$data_frame_triangles$alpha,
               y = enve$data_frame_triangles$geom_corr,
               xout = out_list[[i]]$data_frame_triangles$alpha
@@ -183,7 +183,7 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
     })
 
   triangles <-
-    st_sf(
+    sf::st_sf(
       list(
         geometry = polygons,
         segments = linestrings_splitted,
