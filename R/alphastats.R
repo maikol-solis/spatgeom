@@ -186,6 +186,7 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
       max(sf::st_length(sf::st_cast(sf::st_sfc(x))))
     })
 
+  alpha <- NULL
   triangles <-
     sf::st_sf(
       list(
