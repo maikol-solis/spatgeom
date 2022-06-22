@@ -1,32 +1,33 @@
-#' print \code{topsa} objects
+#' print a \code{spatgeom} object
 #'
-#' Print method for objects of class \code{topsa}.
+#' Print method for objects of class \code{spatgeom}.
 #'
-#' @param topsaObj an object of class \code{topsa}
-#' @param only.return.table  if \code{TRUE}, returns a data frame with the
+#' @param x an object of class \code{spatgeom}
+#' @param return_table  if \code{TRUE}, returns a data frame with the
 #'   estimated values. Otherwise, print the data frame in console. Defaults to
 #'   \code{FALSE}
 #' @param ... further arguments passed to the \code{plot} function
 #'
-#' @return Print the threshold used, the box area, manifold embedding area, geometric
-#' correlation index and symmetric sensitivity index for and object of class
-#' \code{topsa}.
+#' @return Print the estimate given by \code{\link{alphastats}}.
 #' @export
 #'
 #' @examples
 #'
-#' ishigami.fun <- function(X) {
-#' A <- 7
-#' B <- 0.1
-#' sin(X[, 1]) + A * sin(X[, 2])^2 + B * X[, 3]^4 * sin(X[, 1])
-#' }
+#' n <- 100
+#' a <- -1
+#' b <- 1
+#' theta <- runif(n, 0, 2 * pi)
+#' r <- (sqrt(runif(n))) * (0.5) + 0.5
+#' X1 <- r * cos(theta)
+#' X2 <- runif(n, a, b)
+#' Y <- data.frame(Y = r * sin(theta))
+#' X <- data.frame(X1, X2)
 #'
-#' X <- matrix(runif(3*50, -pi, pi), ncol = 3)
-#' Y <- ishigami.fun(X)
-#'
-#' estimation <- topsa(Ydat = Y, Xdat = X)
+#' estimation <- alphastats(y = Y, x = X)
 #'
 #' print(estimation)
+#'
+
 print.spatgeom <- function(x, return_table = FALSE, ...) {
   out <- lapply(
     X = x$results,
