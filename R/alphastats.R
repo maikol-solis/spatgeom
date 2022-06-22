@@ -206,19 +206,22 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
         poly_union <- sf::st_union(alpha_shape$geometry)
         poly_reflection <- estimate_symmetric_reflection(poly_union)
 
-
-        poly_sym_difference <-
-          sf::st_sym_difference(poly_union, poly_reflection)
-        poly_sym_difference_bb <-
-          sf::st_sym_difference(bb, poly_sym_difference)
-
-
+        ## Geometric R2 index
         geom_corr <-
           1 - sf::st_area(poly_union) / sf::st_area(bb)
+        ###############################################################
+        ## TODO The geom sensitivity part needs work, in particular the
+        ## interpretation of the results
+        ###############################################################
+        poly_sym_difference <-
+          sf::st_sym_difference(poly_union, poly_reflection)
         geom_sens <-
           sf::st_area(poly_sym_difference) / (2 * sf::st_area(poly_union))
-        geom_sens2 <- sf::st_area(poly_sym_difference_bb) /
-          sf::st_area(bb)
+        ## poly_sym_difference_bb <-
+        ##   sf::st_sym_difference(bb, poly_sym_difference)
+        ## geom_sens2 <- sf::st_area(poly_sym_difference_bb) /
+        ## sf::st_area(bb)
+        ###############################################################
       } else {
         geom_corr <- 1
         geom_sens <- 1
