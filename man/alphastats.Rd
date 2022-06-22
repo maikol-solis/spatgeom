@@ -16,6 +16,8 @@ alphastats(
 \arguments{
 \item{x}{numeric matrix or data.frame of covariables.}
 
+\item{...}{further arguments. Currently ignored.}
+
 \item{scale}{boolean to make the estimations with scaled variables. Default
 \code{FALSE}.}
 
@@ -24,6 +26,9 @@ minimum and maximum edge distance on the Delanauy triangulation.}
 
 \item{envelope}{boolean to determine if the Monte-Carlo is estimated. Default
 \code{FALSE}.}
+
+\item{mc_cores}{an integer to determine how many parallel process should be
+run. Default \code{mc_core=2}.}
 
 \item{y}{numeric vector of responses in a model.}
 }
@@ -69,7 +74,7 @@ with parameter \code{mean_n}.
 }}
 }
 \description{
-Geometric Spatial Point Pattern Analysis
+Function to estimate the geometric correlation between variables.
 }
 \examples{
 
