@@ -69,7 +69,11 @@ alphastats <- function(x, ...,
 
 
 
-alphastats.xy <- function(x, y, ...) {
+alphastats.xy <- function(x, y,
+                          scale = FALSE,
+                          nalphas = 100,
+                          envelope = FALSE,
+                          mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
