@@ -33,27 +33,6 @@ plot_geom_curves <-
         df
       )
 
-      # f <- smooth.spline(
-      #   x = x$results[[k]]$data_frame_triangles$alpha,
-      #   y =  x$results[[k]]$data_frame_triangles$geom_corr
-      #   # tol = x$results[[k]]$tol
-      # )
-      #
-      # df_f <-
-      #   rbind(data.frame(
-      #     x = f$x,
-      #     y = f$y,
-      #     variable = colnames(x$Xdat)[k]
-      #   ), df_f)
-
-      # fp <- predict(f, deriv = 1)
-      # df_fp <-
-      #   rbind(data.frame(
-      #     x = fp$x,
-      #     y = fp$y,
-      #     variable = colnames(x$Xdat)[k]
-      #   ), df_fp)
-
       df_fp <-
         rbind(data.frame(
           x = x$results[[k]]$data_frame_triangles$alpha[-1],
@@ -63,56 +42,8 @@ plot_geom_curves <-
 
     }
 
-
-    # df_R2 <- as.data.frame(cbind(x$Ydat, x$Xdat)) %>%
-    #   pivot_longer(cols = 2:(ncol(x$Xdat) + 1)) %>%
-    #   split(.$name) %>%
-    #   map(~ mgcv::gam(Y ~ s(value), data = .)) %>%
-    #   map(summary) %>%
-    #   map_df("r.sq")     %>%
-    #   pivot_longer(cols = everything(),
-    #                names_to = "variable",
-    #                values_to = "R2") %>%
-    #   mutate(max_alpha=max(df$alpha))
-
-
-      # left_join(df %>% group_by(variable) %>% summarise(max_alpha = max(alpha)))
-
-
-
-
-
     if (type == "curve") {
-      # for (k in 1:nvar) {
-      #   f <- smooth.spline(
-      #     x = x$results[[k]]$data_frame_triangles$alpha,
-      #     y =  x$results[[k]]$data_frame_triangles$geom_corr
-      #   )
-      #
-      #   plt <- plt +
-      #     ggplot2::geom_line(data=data.frame(x=f$x,y=f$y), aes(x,y), size = 1.1)
-      #
-      #     #
-      #     # ggplot2::geom_function(
-      #     #   data = transform(df, variable = colnames(x$Xdat)[k]),
-      #     #   fun = f,
-      #     #   size = 1.1
-      #     # )
-      # }
-
       plt <- ggplot2::ggplot(df) +
-        # ggplot2::geom_hline(
-        #   data = df_R2,
-        #   mapping = aes(yintercept = R2),
-        #   color = "red",
-        #   size = 0.5
-        # ) +
-        # ggplot2::geom_label(
-        #   data = df_R2,
-        #   mapping = aes(x = max_alpha, y =  1, label = paste("Stat. R^2: ", scales::number(R2,accuracy = 0.01))),
-        #   color = "red",
-        #   size = 3, vjust = 1,hjust = 1
-        # ) +
         ggplot2::geom_step(ggplot2::aes(x = alpha, y = geom_corr),
                            # color = "black",
                             size = 1)
@@ -139,30 +70,7 @@ plot_geom_curves <-
         cowplot::theme_cowplot(font_size = font_size) +
         cowplot::background_grid(minor = "y") +
         cowplot::panel_border()
-      # ggplot2::theme(panel.grid.minor.y = ggplot2::element_line(color = "grey85", linetype = "dashed"))
-
-
     } else if (type == "deriv") {
-      # for (k in 1:nvar) {
-      #   f <- smooth.spline(
-      #     x = x$results[[k]]$data_frame_triangles$alpha,
-      #     y =  x$results[[k]]$data_frame_triangles$geom_corr
-      #   )
-      #
-      #   fp <- predict(f, deriv = 1)
-      #
-      #   plt <- plt +
-      #     ggplot2::geom_line(data = data.frame(x = fp$x, y = fp$y), aes(x, y), size = 1.1)
-      #
-      #
-      #     # ggplot2::geom_function(
-      #     #   data = transform(df, variable = colnames(x$Xdat)[k]),
-      #     #   fun = f,
-      #     #   size= 1.1,
-      #     #   args = list(deriv = 1)
-      #     # )
-      # }
-
       plt <- ggplot2::ggplot(df) +
         ggplot2::geom_line(data = df_fp, ggplot2::aes(x, y), size = 1) +
         ggplot2::scale_y_continuous(name = expression(f * minute(alpha))) +
@@ -176,33 +84,6 @@ plot_geom_curves <-
     }
 
     return(plt)
-
-    # plt_sens <- ggplot2::ggplot(df) +
-    #   ggplot2::geom_point(aes(x = alpha, y = geom_sens),
-    #                       color = "grey50",
-    #                       size = 2) +
-    #   scale_y_continuous(labels = scales::percent) +
-    #   ggplot2::ylim(c(0, 1))
-    #
-    # for (k in 1:nvar) {
-    #   f <-
-    #     splinefun(
-    #       x$results[[k]]$data_frame_triangles$alpha,
-    #       x$results[[k]]$data_frame_triangles$geom_sens,
-    #       method = "natural"
-    #     )
-    #   plt_sens <- plt_sens +
-    #     ggplot2::geom_function(data = transform(df, variable =  colnames(x$Xdat)[k]),
-    #                            fun = f)
-    # }
-    #
-    # plt_sens <- plt_sens +
-    #   ggplot2::facet_wrap(. ~ variable) +
-    #   ggplot2::labs(title = "Geometric Sensitivity",
-    #                 x = "Alpha radius",
-    #                 y = "?") +
-    #   ggplot2::theme_minimal()
-
 
   }
 
