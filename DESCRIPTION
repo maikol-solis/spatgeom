@@ -16,7 +16,6 @@ Authors@R: c(
                  email = "carlos.pasquier@ucr.ac.cr", 
                  role = c("ctb"))
           )
-Maintainer: Maikol Solís <maikol.solis@ucr.ac.cr>
 Description: Geometric spatial point analysis package.
 License: MIT + file LICENSE
 URL: https://github.com/maikol-solis/topsa
