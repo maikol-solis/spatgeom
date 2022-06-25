@@ -53,6 +53,12 @@
 #'
 #' }}}}
 #'
+#' @references
+#'
+#' Hernández, A.J., Solís, M. Geometric goodness of fit measure to detect
+#' patterns in data point clouds. Comput Stat (2022).
+#' https://doi.org/10.1007/s00180-022-01244-1
+#'
 #' @examples
 #'
 #' n <- 100
