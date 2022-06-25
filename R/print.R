@@ -12,8 +12,8 @@
 #' @export
 #'
 #' @examples
-#'
-#' n <- 50
+#' \dontrun{
+#' n <- 100
 #' a <- -1
 #' b <- 1
 #' theta <- runif(n, 0, 2 * pi)
@@ -26,8 +26,10 @@
 #' estimation <- alphastats(y = Y, x = X)
 #'
 #' print(estimation)
+#' }
 #'
-
+#' @export
+#'
 print.spatgeom <- function(x, return_table = FALSE, ...) {
   out <- lapply(
     X = x$results,

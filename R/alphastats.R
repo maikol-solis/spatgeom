@@ -60,8 +60,8 @@
 #' https://doi.org/10.1007/s00180-022-01244-1
 #'
 #' @examples
-#'
-#' n <- 50
+#' \dontrun{
+#' n <- 100
 #' a <- -1
 #' b <- 1
 #' theta <- runif(n, 0, 2 * pi)
@@ -72,6 +72,7 @@
 #' X <- data.frame(X1, X2)
 #'
 #' estimation <- alphastats(y = Y, x = X)
+#' }
 #' @export
 
 
