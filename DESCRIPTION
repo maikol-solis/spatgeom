@@ -18,8 +18,8 @@ Authors@R: c(
           )
 Description: Geometric spatial point analysis package.
 License: MIT + file LICENSE
-URL: https://github.com/maikol-solis/topsa
-BugReports: https://github.com/maikol-solis/geomsensitivity/issues
+URL: https://github.com/maikol-solis/spatgeom
+BugReports: https://github.com/maikol-solis/spatgeom/issues
 Encoding: UTF-8
 LazyData: true 
 Imports: 
