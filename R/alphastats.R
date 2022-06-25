@@ -1,6 +1,7 @@
-#' Geometric Spatial Point Pattern Analysis
+#' @title Geometric Spatial Point Pattern Analysis
 #'
-#' Function to estimate the geometric correlation between variables.
+#' @description Function to estimate the geometric correlation between
+#'   variables.
 #'
 #' @param x numeric matrix or data.frame of covariables.
 #' @param y numeric vector of responses in a model.
@@ -12,22 +13,19 @@
 #'   \code{FALSE}.
 #' @param mc_cores an integer to determine how many parallel process should be
 #'   run. Default \code{mc_core=2}.
-#' @param ... further arguments. Currently ignored.
 #'
 #'
 #' @return A list of class \code{spatgeom} with  the following elements:
 #'
 #' \describe{
-#'
 #' \item{\strong{call}}{The function call.}
 #'
 #' \item{\strong{x}}{\code{x} input.}
 #'
-#' \item{\strong{y}}{\code{x} output.}
+#' \item{\strong{y}}{\code{y} output.}
 #'
 #' \item{\strong{results}}{A list of size \code{ncol(x)} corresponding to each
 #' column of \code{x}. Each element of the list has:
-#'
 #' \describe{
 #'
 #' \item{\strong{triangles}}{a data frame of class \code{sfc} (see
@@ -49,11 +47,12 @@
 #' \item{\strong{mean_n}}{the mean number of points in the point process.}
 #'
 #' \item{\strong{envelope_data}}{a data frame in tidy format with 40 runs of a
-#' CSR process, if \code{envelope=TRUE}, The CSR is created by generating $n$
-#' uniform points in the plane, where $n$ is drawn from Poisson distribution
-#' with parameter \code{mean_n}.
+#' CSR process, if \code{envelope=TRUE}, The CSR is created by generating
+#' \emph{n} uniform points in the plane, where \emph{n} is drawn from Poisson
+#' distribution with parameter \code{mean_n}.
 #'
-#' }}
+#' }}}}
+#'
 #' @examples
 #'
 #' n <- 100
