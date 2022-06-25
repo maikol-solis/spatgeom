@@ -68,7 +68,7 @@ variables.
 }
 \examples{
 
-n <- 100
+n <- 50
 a <- -1
 b <- 1
 theta <- runif(n, 0, 2 * pi)
