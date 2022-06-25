@@ -1,47 +1,58 @@
-#' Geometric Spatial Point Pattern Analysis
-#' @param y numeric vector of responses in a model.
+#' @title Geometric Spatial Point Pattern Analysis
+#'
+#' @description Function to estimate the geometric correlation between
+#'   variables.
+#'
 #' @param x numeric matrix or data.frame of covariables.
+#' @param y numeric vector of responses in a model.
 #' @param scale boolean to make the estimations with scaled variables. Default
 #'   \code{FALSE}.
 #' @param nalphas a single number for the number of alphas generated between the
 #'   minimum and maximum edge distance on the Delanauy triangulation.
 #' @param envelope boolean to determine if the Monte-Carlo is estimated. Default
 #'   \code{FALSE}.
+#' @param mc_cores an integer to determine how many parallel process should be
+#'   run. Default \code{mc_core=2}.
+#'
 #'
 #' @return A list of class \code{spatgeom} with  the following elements:
-#' of size \code{ncol{x}}. Each
-#'   element of the list has the following elements:
 #'
 #' \describe{
-#'
 #' \item{\strong{call}}{The function call.}
 #'
 #' \item{\strong{x}}{\code{x} input.}
 #'
-#' \item{\strong{y}}{\code{x} output.}
+#' \item{\strong{y}}{\code{y} output.}
 #'
-#' \item{\strong{results}}{A list of size \code{ncol} corresponding to each
+#' \item{\strong{results}}{A list of size \code{ncol(x)} corresponding to each
 #' column of \code{x}. Each element of the list has:
-#'
 #' \describe{
 #'
 #' \item{\strong{triangles}}{a data frame of class \code{sfc} (see
 #' [`sf::st_sf()`])with columns \code{geometry}, \code{segments},
 #' \code{max_length} and \code{alpha}. The data.frame contains the whole
-#' Delanauy triangulation for the corresponding column of \code{x} and \code{y}.}
+#' Delanauy triangulation for the corresponding column of \code{x} and \code{y}.
+#' The \code{segments} column are the segments of each individual triangle and
+#' \code{max_length} is the maximum length of them.}
 #'
 #' \item{\strong{data_frame_triangles}}{a data frame with columns \code{alpha}
 #'  and \code{geom_corr}. The \code{alpha} column is a numeric vector of size
 #'  \code{nalphas} from the minimum to the maximum distance between points
 #'  estimated in the data. The \code{geom_corr} column is the value \code{1 -
-#'  (alpha-shape Area)/(containing box Area).}}
+#'  (alpha shape Area)/(containing box Area).}}
 #'
 #' \item{\strong{intensity}}{the intensity estimated for the corresponding
 #' column of \code{x} and \code{y}.}
 #'
 #' \item{\strong{mean_n}}{the mean number of points in the point process.}
 #'
-#' }}
+#' \item{\strong{envelope_data}}{a data frame in tidy format with 40 runs of a
+#' CSR process, if \code{envelope=TRUE}, The CSR is created by generating
+#' \emph{n} uniform points in the plane, where \emph{n} is drawn from Poisson
+#' distribution with parameter \code{mean_n}.
+#'
+#' }}}}
+#'
 #' @examples
 #'
 #' n <- 100
@@ -57,64 +68,63 @@
 #' estimation <- alphastats(y = Y, x = X)
 #' @export
 
-alphastats <- function(y,
-                       x,
+
+alphastats <- function(x, y,
                        scale = FALSE,
                        nalphas = 100,
-                       envelope = FALSE) {
+                       envelope = FALSE,
+                       mc_cores = 2) {
+  if (missing(y)) {
+    message("Running a with only x")
+  } else {
+    message("Running with x and y")
+    alphastats_xy(x, y,
+      scale = scale,
+      nalphas = nalphas,
+      envelope = envelope,
+      mc_cores = mc_cores
+    )
+  }
+}
+
+
+
+alphastats_xy <- function(x, y,
+                          scale = FALSE,
+                          nalphas = 100,
+                          envelope = FALSE,
+                          mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
-  ANS <- list() # nolint
-  ANS[["call"]] <- match.call()
-  ANS[["x"]] <- x
-  ANS[["y"]] <- y
-
-  # Xr <- matrix()
-  # Yr <- matrix()
-  # l <- lapply(seq_along(x), function(k) {
-  #   scales::rescale(cbind(x[, k], y[, 1]))
-  # })
-  #
-  # lx <- lapply(l, function(x)
-  #   x[, 1])
-  #
-  # Xr <- as.data.frame(do.call("cbind", lx))
-  # Yr <- as.data.frame(sapply(y, scales::rescale))
-  # ANS[['Xr']] <- Xr
-  # ANS[['Yr']] <- Yr
-  # ANS[["Xr"]] <- as.data.frame(lapply(x, scales::rescale))
-  # ANS[["Yr"]] <- as.data.frame(lapply(y, scales::rescale))
-  # ANS[["angle"]] <- angle
-  #
-
-
-  # if (length(threshold.radius) == 1) {
-  #   threshold.radius <- rep(threshold.radius, ncol(x))
-  # } else if (length(threshold.radius) < ncol(x)) {
-  #   stop("Please provide a numeric threshold vector of size 1 or ncol(x)")
-  # }
-
-
-
+  ans <- list()
+  ans[["call"]] <- match.call()
+  ans[["x"]] <- x
+  ans[["y"]] <- y
 
   message("Index estimation")
 
-
-
   out_list <- parallel::mclapply(
-    mc.cores = 6,
+    mc.cores = mc_cores,
     X = seq_len(ncol(x)),
     FUN = function(i) {
       message(paste0("Estimating R2 Geom for variable = ", i))
       estimate_curves(
-        x = x[, i],
-        y = y[, 1],
+        x1 = x[, i],
+        x2 = y[, 1],
         scale = scale,
         nalphas = nalphas
       )
     }
   )
+
+  out_list <- lapply(
+    X = seq_len(ncol(x)),
+    FUN = function(i) {
+      append(out_list[[i]], list(variable_name = colnames(x)[i]))
+    }
+  )
+
 
   if (envelope == TRUE) {
     for (i in seq_len(ncol(x))) {
@@ -127,22 +137,22 @@ alphastats <- function(y,
         )
 
       envelope_data <- parallel::mclapply(
-        mc.cores = 6,
+        mc.cores = mc_cores,
         X = seq_len(40),
         FUN = function(k) {
-          n <- rpois(1, lambda = out_list[[i]]$mean_n)
-          x <- runif(n, min = min(x[, i]), max = max(x[, i]))
-          y <- runif(n, min = min(y[, 1]), max = max(y[, 1]))
+          n <- stats::rpois(1, lambda = out_list[[i]]$mean_n)
+          x <- stats::runif(n, min = min(x[, i]), max = max(x[, i]))
+          y <- stats::runif(n, min = min(y[, 1]), max = max(y[, 1]))
           enve <-
             estimate_curves(
-              x = x,
-              y = y,
+              x1 = x,
+              x2 = y,
               scale = scale,
               nalphas = nalphas,
               intensity = out_list[[i]]$intensity
             )
           enve_approx <-
-            approx(
+            stats::approx(
               x = enve$data_frame_triangles$alpha,
               y = enve$data_frame_triangles$geom_corr,
               xout = out_list[[i]]$data_frame_triangles$alpha
@@ -155,22 +165,34 @@ alphastats <- function(y,
     }
   }
 
-  ANS[["results"]] <- out_list
-  class(ANS) <- "spatgeom"
-  return(ANS)
+  ans[["results"]] <- out_list
+  class(ans) <- "spatgeom"
+  return(ans)
 }
 
 
 
-estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
+
+alphastats_x <- function(x, ...) {
+
+}
+
+
+
+
+estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
   if (scale) {
-    pts <-
-      sf::st_cast(sf::st_sfc(sf::st_multipoint(scales::rescale(cbind(
-        x, y
-      )))), "POINT")
+    pts <- sf::st_cast(
+      sf::st_sfc(
+        sf::st_multipoint(scales::rescale(cbind(x1, x2)))
+      ), "POINT"
+    )
   } else {
-    pts <-
-      sf::st_cast(sf::st_sfc(sf::st_multipoint(cbind(x, y))), "POINT")
+    pts <- sf::st_cast(
+      sf::st_sfc(
+        sf::st_multipoint(cbind(x1, x2))
+      ), "POINT"
+    )
   }
   bb <- sf::st_make_grid(pts, n = 1)
 
@@ -188,8 +210,9 @@ estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
       max(sf::st_length(sf::st_cast(sf::st_sfc(x))))
     })
 
+  alpha <- NULL
   triangles <-
-    st_sf(
+    sf::st_sf(
       list(
         geometry = polygons,
         segments = linestrings_splitted,
@@ -212,19 +235,22 @@ estimate_curves <- function(x, y, scale, nalphas, intensity = NULL) {
         poly_union <- sf::st_union(alpha_shape$geometry)
         poly_reflection <- estimate_symmetric_reflection(poly_union)
 
-
-        poly_sym_difference <-
-          sf::st_sym_difference(poly_union, poly_reflection)
-        poly_sym_difference_bb <-
-          sf::st_sym_difference(bb, poly_sym_difference)
-
-
+        ## Geometric R2 index
         geom_corr <-
           1 - sf::st_area(poly_union) / sf::st_area(bb)
+        ###############################################################
+        ## TODO The geom sensitivity part needs work, in particular the
+        ## interpretation of the results
+        ###############################################################
+        poly_sym_difference <-
+          sf::st_sym_difference(poly_union, poly_reflection)
         geom_sens <-
           sf::st_area(poly_sym_difference) / (2 * sf::st_area(poly_union))
-        geom_sens2 <- sf::st_area(poly_sym_difference_bb) /
-          sf::st_area(bb)
+        ## poly_sym_difference_bb <-
+        ##   sf::st_sym_difference(bb, poly_sym_difference)
+        ## geom_sens2 <- sf::st_area(poly_sym_difference_bb) /
+        ## sf::st_area(bb)
+        ###############################################################
       } else {
         geom_corr <- 1
         geom_sens <- 1

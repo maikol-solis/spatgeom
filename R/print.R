@@ -1,62 +1,67 @@
-#' print \code{topsa} objects
+#' print a \code{spatgeom} object
 #'
-#' Print method for objects of class \code{topsa}.
+#' Print method for objects of class \code{spatgeom}.
 #'
-#' @param topsaObj an object of class \code{topsa}
-#' @param only.return.table  if \code{TRUE}, returns a data frame with the
+#' @param x an object of class \code{spatgeom}
+#' @param return_table  if \code{TRUE}, returns a data frame with the
 #'   estimated values. Otherwise, print the data frame in console. Defaults to
 #'   \code{FALSE}
 #' @param ... further arguments passed to the \code{plot} function
 #'
-#' @return Print the threshold used, the box area, manifold embedding area, geometric
-#' correlation index and symmetric sensitivity index for and object of class
-#' \code{topsa}.
+#' @return Print the estimate given by \code{\link{alphastats}}.
 #' @export
 #'
 #' @examples
 #'
-#' ishigami.fun <- function(X) {
-#' A <- 7
-#' B <- 0.1
-#' sin(X[, 1]) + A * sin(X[, 2])^2 + B * X[, 3]^4 * sin(X[, 1])
-#' }
+#' n <- 100
+#' a <- -1
+#' b <- 1
+#' theta <- runif(n, 0, 2 * pi)
+#' r <- (sqrt(runif(n))) * (0.5) + 0.5
+#' X1 <- r * cos(theta)
+#' X2 <- runif(n, a, b)
+#' Y <- data.frame(Y = r * sin(theta))
+#' X <- data.frame(X1, X2)
 #'
-#' X <- matrix(runif(3*50, -pi, pi), ncol = 3)
-#' Y <- ishigami.fun(X)
-#'
-#' estimation <- topsa(Ydat = Y, Xdat = X)
+#' estimation <- alphastats(y = Y, x = X)
 #'
 #' print(estimation)
+#'
 
-print_topsa <- function(topsaObj, only.return.table = FALSE, ...) {
-  sensitivity_table <- t(sapply(topsaObj$results, function(x) {
-    unlist(x[c(
-      "threshold",
-      "Manifold.Area",
-      "Box.Area",
-      "Geometric.R2",
-      "Geometric.Sensitivity"
-    )])
-  }))
+print.spatgeom <- function(x, return_table = FALSE, ...) {
+  out <- lapply(
+    X = x$results,
+    FUN = function(xx) {
+      cbind(
+        variable_name = xx$variable_name,
+        mean_n = xx$mean_n,
+        intensity = xx$intensity,
+        xx$data_frame_triangles
+      )
+    }
+  )
 
-  colnames(sensitivity_table) <-
-    c('Threshold',
-      'Manifold Area',
-      'Box Area' ,
-      'Geometric R2',
-      'Geometric Sensitivity')
-  rownames(sensitivity_table) <- colnames(topsaObj$Xdat)
+  out <- do.call(rbind, out)
+  out <- as.data.frame(out)
 
-  if (only.return.table == TRUE) {
-    return(sensitivity_table)
+
+  if (return_table == TRUE) {
+    return(out)
   }
 
+  variable_name <- mean_n <-
+    intensity <- geom_corr <- alpha <- NULL
+  o <- dplyr::group_by(.data = out, variable_name)
+  o <- dplyr::summarise(
+    .data = o,
+    mean_n = min(mean_n),
+    intensity = dplyr::first(cut(intensity, breaks = 2)),
+    alpha = dplyr::first(cut(alpha, breaks = 2)),
+    geom_corr = dplyr::first(cut(geom_corr, breaks = 2))
+  )
 
-  cat("\nCall:\n", deparse(topsaObj[['call']]), "\n", sep = "")
-  cat("\nMethod used:", deparse(topsaObj[["call"]]$method), sep = "")
-  cat("\nNumber of variables:", ncol(topsaObj[['Xdat']]), "\n")
-  cat("\nNumber of observations:", nrow(topsaObj[['Ydat']]), "\n")
-  cat("\nFirst order indices\n")
-  print(sensitivity_table[,])
-  # return(sensitivity_table)
+  cat("\nCall:\n", deparse(x[["call"]]), "\n", sep = "")
+  cat("\nNumber of variables:", ncol(x[["x"]]), "\n")
+  cat("\nNumber of observations:", nrow(x[["y"]]), "\n")
+  print(o)
 }

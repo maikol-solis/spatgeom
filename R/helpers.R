@@ -1,28 +1,16 @@
 
 
 estimate_symmetric_reflection <- function(polygon) {
-  # true_polygon_coords <- sf::st_coordinates(polygon)
-  #
-  # polygon <-
-  #   polygon - c(min(true_polygon_coords[, "X"]), min(true_polygon_coords[, "Y"]))
-  #
-  # polygon_coords <- sf::st_coordinates(polygon)
-  #
   affine_transformation <- matrix(c(1, 0, 0, -1), 2, 2)
   cntrd <- sf::st_centroid(polygon)
-
-  polygon_reflected <-
-    (polygon - cntrd) * affine_transformation + cntrd
-  # polygon_reflected <- polygon_reflected +
-  #   c(0, min(polygon_coords[, "Y"]) + max(polygon_coords[, "Y"]))
-  #   #c(0, 2 * mean(polygon_coords[, "Y"]))
-  #   #c(0, 2 * diff(range(polygon_coords[, "Y"])) / 2)
-  #
-  # polygon_reflected + c(min(true_polygon_coords[, "X"]), min(true_polygon_coords[, "Y"]))
+  polygon_reflected <- (polygon - cntrd) * affine_transformation + cntrd
+  ## RETURN
+  polygon_reflected
 }
 
 
 st_segment <- function(x) {
+  l1 <- x1 <- y <- y1 <- geometry <- NULL
   segment <- sf::st_cast(x, "LINESTRING")
   segment <- sf::st_coordinates(segment)
   segment <- dplyr::as_tibble(segment)
@@ -44,7 +32,7 @@ st_segment <- function(x) {
 }
 
 
-RotMat <- function(angle) {
+rot_mat <- function(angle) {
   matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)),
     nrow = 2, ncol = 2
   )
@@ -68,11 +56,11 @@ num_deriv <- function(y, x) {
     fdx[i] <- (y[i + 1] - y[i - 1]) / (x[i + 1] - x[i - 1])
   }
 
-  # For the last value, since we are unable to perform the forward differencing method
-  # as only the first n values are known, we use the backward differencing approach
-  # instead. Note this will essentially give the same value as the last iteration
-  # in the forward differencing method, but it is used as an approximation as we
-  # don't have any more information
+  # For the last value, since we are unable to perform the forward differencing
+  # method as only the first n values are known, we use the backward
+  # differencing approach instead. Note this will essentially give the same
+  # value as the last iteration in the forward differencing method, but it is
+  # used as an approximation as we don't have any more information
   fdx[n] <- (y[n] - y[n - 1]) / (x[n] - x[n - 1])
 
   return(fdx)
