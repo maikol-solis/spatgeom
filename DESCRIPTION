@@ -1,6 +1,6 @@
 Package: spatgeom
 Type: Package
-Title: Geometric spatial point analysis.
+Title: Geometric spatial point analysis
 Version: 0.1.0
 Authors@R: c(
           person(given = "Maikol", 
@@ -23,7 +23,14 @@ URL: https://github.com/maikol-solis/topsa
 BugReports: https://github.com/maikol-solis/geomsensitivity/issues
 Encoding: UTF-8
 LazyData: true 
-Imports: ggplot2, scales, sf, methods 
+Imports: 
+    ggplot2,
+    scales,
+    sf,
+    dplyr,
+    lwgeom,
+    cowplot,
+    purrr
 RoxygenNote: 7.2.0
 Roxygen: list(markdown=TRUE)
 Depends: R (>= 3.6.0)
