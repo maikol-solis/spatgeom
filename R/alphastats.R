@@ -70,17 +70,27 @@
 #' @export
 
 
-alphastats <- function(x, ...,
+alphastats <- function(x, y,
                        scale = FALSE,
                        nalphas = 100,
                        envelope = FALSE,
                        mc_cores = 2) {
-  UseMethod("alphastats")
+  if (missing(y)) {
+    message("Running a with only x")
+  } else {
+    message("Running with x and y")
+    alphastats_xy(x, y,
+      scale = scale,
+      nalphas = nalphas,
+      envelope = envelope,
+      mc_cores = mc_cores
+    )
+  }
 }
 
 
 
-alphastats.xy <- function(x, y,
+alphastats_xy <- function(x, y,
                           scale = FALSE,
                           nalphas = 100,
                           envelope = FALSE,
@@ -156,7 +166,7 @@ alphastats.xy <- function(x, y,
 
 
 
-alphastats.default <- function(x, ...) {
+alphastats_x <- function(x, ...) {
 
 }
 
