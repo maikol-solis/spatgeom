@@ -1,20 +1,43 @@
-#' plot \code{topsa} objects
+#' plot \code{spatgeom} objects
 #'
-#' Plot method for objects of class \code{topsa}.
+#' Plot method for objects of class \code{spatgeom}.
 #'
-#' @param topsaObj an object of class \code{topsa}
-#' @param nvar  it could be a sequence from 1 to the number of variables
-#'   indicating which variables should be plotted. It could be the character
-#'   'all' for plot all the variables.
-#' @param ... further arguments passed to the \code{plot} function
+#' @param x an object of class \code{spatgeom}
+#' @param type a string that could be \code{curve} or \code{deriv}. The option
+#'   \code{curve} plots the curve of \code{alpha} against \code{geom_corr} from
+#'   the function [`spatgeom::alphastats()`]. The \code{deriv} option plots the
+#'   numerical derivative.
+#' @param font_size a integer that increases the font size in the plot.
 #'
-#' @return A plot of generated with the output of \code{topsa}. For each
-#' variable in the model, it creates the plot of the corresponding manifold, its
-#' symmetric reflection and its symmetric difference.
+#' @return a \code{\link[ggplot2]{ggplot}} object with the geometric indices (or
+#'   its derivative). The plot is generated with the \code{nalphas} point of
+#'   \code{alpha} and \code{geom_corr} from the function
+#'   \code{\link{alphastats}}.
+#'
+#' In each panel, the theoretical CSR process is drawn using
+#'   \code{exp(-intensity * pi * x^2)}. where the intensity depends on each
+#'   panel.
+#'
+#' @examples
+#'
+#' n <- 100
+#' a <- -1
+#' b <- 1
+#' theta <- runif(n, 0, 2 * pi)
+#' r <- (sqrt(runif(n))) * (0.5) + 0.5
+#' X1 <- r * cos(theta)
+#' X2 <- runif(n, a, b)
+#' Y <- data.frame(Y = r * sin(theta))
+#' X <- data.frame(X1, X2)
+#'
+#' estimation <- alphastats(y = Y, x = X)
+#'
+#' plot_curve(estimation, type = "curve")
+#' plot_curve(estimation, type = "deriv")
 #'
 #' @export
 
-plot_geom_curves <-
+plot_curve <-
   function(x,
            type = c("curve", "deriv"),
            font_size = 12) {
@@ -89,47 +112,3 @@ plot_geom_curves <-
 
     return(plt)
   }
-
-
-#' @export
-plot_alpha_shape <- function(x, alpha, font_size = 12) {
-  nvar <- length(x$results)
-  df <- max_length <- geometry <- NULL
-
-  for (k in 1:nvar) {
-    df_triangles <- subset(x$results[[k]]$triangles, max_length < 2 * alpha[k])
-
-    df <- rbind(cbind(df_triangles,
-      variable = colnames(x$x)[k]
-    ), df)
-  }
-
-  ggplot2::ggplot() +
-    ggplot2::geom_sf(
-      data = df,
-      mapping = ggplot2::aes(geometry = geometry),
-      fill = "skyblue1",
-      color = "grey30",
-      size = 0.05
-    ) +
-    ggplot2::facet_wrap(. ~ variable) +
-    cowplot::theme_cowplot(font_size = font_size) +
-    cowplot::background_grid(minor = "y") +
-    cowplot::panel_border()
-
-  # p <- ggplot2::ggplot(x$results[[1]]$triangles%>%
-  #                   dplyr::mutate(alpha_reveal = 2 * max_length)) +
-  #   ggplot2::geom_sf(
-  #     mapping = aes(geometry = geometry),
-  #     fill = "skyblue1",
-  #     color = "grey30",
-  #     size = 0.1
-  #   ) +
-  #   # ggplot2::facet_wrap(. ~ variable) +
-  #   cowplot::theme_cowplot(font_size = font_size) +
-  #   cowplot::background_grid(minor = "y") +
-  #   cowplot::panel_border() +
-  #   gganimate::transition_time(alpha_reveal)
-  #
-  # gganimate::animate(p)
-}
