@@ -119,6 +119,14 @@ alphastats_xy <- function(x, y,
     }
   )
 
+  out_list <- lapply(
+    X = seq_len(ncol(x)),
+    FUN = function(i) {
+      append(out_list[[i]], list(variable_name = colnames(x)[i]))
+    }
+  )
+
+
   if (envelope == TRUE) {
     for (i in seq_len(ncol(x))) {
       message(paste0("Estimating envelope for variable = ", i))
