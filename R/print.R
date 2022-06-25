@@ -27,36 +27,40 @@
 #' estimation <- topsa(Ydat = Y, Xdat = X)
 #'
 #' print(estimation)
+print.spatgeom <- function(x, return_table = FALSE, ...) {
+  out <- lapply(
+    X = x$results,
+    FUN = function(xx) {
+      cbind(
+        variable_name = xx$variable_name,
+        mean_n = xx$mean_n,
+        intensity = xx$intensity,
+        xx$data_frame_triangles
+      )
+    }
+  )
 
-print_topsa <- function(topsaObj, only.return.table = FALSE, ...) {
-  sensitivity_table <- t(sapply(topsaObj$results, function(x) {
-    unlist(x[c(
-      "threshold",
-      "Manifold.Area",
-      "Box.Area",
-      "Geometric.R2",
-      "Geometric.Sensitivity"
-    )])
-  }))
+  out <- do.call(rbind, out)
+  out <- as.data.frame(out)
 
-  colnames(sensitivity_table) <-
-    c('Threshold',
-      'Manifold Area',
-      'Box Area' ,
-      'Geometric R2',
-      'Geometric Sensitivity')
-  rownames(sensitivity_table) <- colnames(topsaObj$Xdat)
 
-  if (only.return.table == TRUE) {
-    return(sensitivity_table)
+  if (return_table == TRUE) {
+    return(out)
   }
 
+  variable_name <- mean_n <-
+    intensity <- geom_corr <- alpha <- NULL
+  o <- dplyr::group_by(.data = out, variable_name)
+  o <- dplyr::summarise(
+    .data = o,
+    mean_n = min(mean_n),
+    intensity = dplyr::first(cut(intensity, breaks = 2)),
+    alpha = dplyr::first(cut(alpha, breaks = 2)),
+    geom_corr = dplyr::first(cut(geom_corr, breaks = 2))
+  )
 
-  cat("\nCall:\n", deparse(topsaObj[['call']]), "\n", sep = "")
-  cat("\nMethod used:", deparse(topsaObj[["call"]]$method), sep = "")
-  cat("\nNumber of variables:", ncol(topsaObj[['Xdat']]), "\n")
-  cat("\nNumber of observations:", nrow(topsaObj[['Ydat']]), "\n")
-  cat("\nFirst order indices\n")
-  print(sensitivity_table[,])
-  # return(sensitivity_table)
+  cat("\nCall:\n", deparse(x[["call"]]), "\n", sep = "")
+  cat("\nNumber of variables:", ncol(x[["x"]]), "\n")
+  cat("\nNumber of observations:", nrow(x[["y"]]), "\n")
+  print(o)
 }
