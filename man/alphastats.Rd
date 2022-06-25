@@ -4,7 +4,7 @@
 \alias{alphastats}
 \title{Geometric Spatial Point Pattern Analysis}
 \usage{
-alphastats(x, y, scale = FALSE, nalphas = 100, envelope = FALSE, mc_cores = 2)
+alphastats(x, y, scale = FALSE, nalphas = 100, envelope = FALSE, mc_cores = 1)
 }
 \arguments{
 \item{x}{numeric matrix or data.frame of covariables.}
@@ -21,7 +21,7 @@ minimum and maximum edge distance on the Delanauy triangulation.}
 \code{FALSE}.}
 
 \item{mc_cores}{an integer to determine how many parallel process should be
-run. Default \code{mc_core=2}.}
+run. Default \code{mc_core=1}.}
 }
 \value{
 A list of class \code{spatgeom} with  the following elements:

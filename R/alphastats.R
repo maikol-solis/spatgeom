@@ -12,7 +12,7 @@
 #' @param envelope boolean to determine if the Monte-Carlo is estimated. Default
 #'   \code{FALSE}.
 #' @param mc_cores an integer to determine how many parallel process should be
-#'   run. Default \code{mc_core=2}.
+#'   run. Default \code{mc_core=1}.
 #'
 #'
 #' @return A list of class \code{spatgeom} with  the following elements:
@@ -73,7 +73,7 @@ alphastats <- function(x, y,
                        scale = FALSE,
                        nalphas = 100,
                        envelope = FALSE,
-                       mc_cores = 2) {
+                       mc_cores = 1) {
   if (missing(y)) {
     message("Running a with only x")
   } else {
