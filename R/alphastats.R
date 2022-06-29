@@ -60,8 +60,7 @@
 #' https://doi.org/10.1007/s00180-022-01244-1
 #'
 #' @examples
-#' \dontrun{
-#' n <- 100
+#' n <- 30
 #' a <- -1
 #' b <- 1
 #' theta <- runif(n, 0, 2 * pi)
@@ -72,7 +71,6 @@
 #' X <- data.frame(X1, X2)
 #'
 #' estimation <- alphastats(y = Y, x = X)
-#' }
 #' @export
 
 
@@ -82,7 +80,7 @@ alphastats <- function(x, y,
                        envelope = FALSE,
                        mc_cores = 1) {
   if (missing(y)) {
-    message("Running a with only x")
+    message("Running with only x")
   } else {
     message("Running with x and y")
     alphastats_xy(x, y,

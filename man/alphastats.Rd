@@ -67,8 +67,7 @@ Function to estimate the geometric correlation between
 variables.
 }
 \examples{
-\dontrun{
-n <- 100
+n <- 30
 a <- -1
 b <- 1
 theta <- runif(n, 0, 2 * pi)
@@ -79,7 +78,6 @@ Y <- data.frame(Y = r * sin(theta))
 X <- data.frame(X1, X2)
 
 estimation <- alphastats(y = Y, x = X)
-}
 }
 \references{
 Hernández, A.J., Solís, M. Geometric goodness of fit measure to detect

@@ -19,8 +19,7 @@
 #'   panel.
 #'
 #' @examples
-#' \dontrun{
-#' n <- 100
+#' n <- 30
 #' a <- -1
 #' b <- 1
 #' theta <- runif(n, 0, 2 * pi)
@@ -33,8 +32,8 @@
 #' estimation <- alphastats(y = Y, x = X)
 #'
 #' plot_curve(estimation, type = "curve")
+#'
 #' plot_curve(estimation, type = "deriv")
-#' }
 #' @export
 
 plot_curve <-

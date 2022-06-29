@@ -22,8 +22,7 @@ the original data at resolution \code{alpha}
 Plot alpha-shape for \code{spatgeom} objects.
 }
 \examples{
-\dontrun{
-n <- 100
+n <- 30
 a <- -1
 b <- 1
 theta <- runif(n, 0, 2 * pi)
@@ -35,6 +34,5 @@ X <- data.frame(X1, X2)
 
 estimation <- alphastats(y = Y, x = X)
 
-plot_alpha_shape(estimation, alpha = 0.5)
-}
+plot_alpha_shape(estimation, alpha = c(0.9, 1.2))
 }
