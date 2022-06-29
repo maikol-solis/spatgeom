@@ -3,27 +3,27 @@ Type: Package
 Title: Geometric Spatial Point Analysis
 Version: 0.1.0
 Authors@R: c(
-          person(given = "Maikol", 
-                 family = "Solís", 
-                 email = "maikol.solis@ucr.ac.cr", 
-                 role = c("aut", "cre")), 
-          person(given = "Alberto", 
-                 family = "Hernández", 
-                 email = "albertojose.hernandez@ucr.ac.cr", 
-                 role = c("ctb")), 
-         person(given = "Carlos", 
-                 family = "Pasquier", 
-                 email = "carlos.pasquier@ucr.ac.cr", 
+          person(given = "Maikol",
+                 family = "Solís",
+                 email = "maikol.solis@ucr.ac.cr",
+                 role = c("aut", "cre")),
+          person(given = "Alberto",
+                 family = "Hernández",
+                 email = "albertojose.hernandez@ucr.ac.cr",
+                 role = c("ctb")),
+         person(given = "Carlos",
+                 family = "Pasquier",
+                 email = "carlos.pasquier@ucr.ac.cr",
                  role = c("ctb"))
           )
 Maintainer: Maikol Solís <maikol.solis@ucr.ac.cr>
-Description: Geometric spatial point analysis package.
+Description: This package perform the geometric spatial point analysis developed in Hernández & Solís (2022) <doi:10.1007/s00180-022-01244-1>. It estimates the geometric goodness-of-fit index for a set of variables against a response one. The package has methods to print and plot the results.
 License: MIT + file LICENSE
 URL: https://github.com/maikol-solis/spatgeom
 BugReports: https://github.com/maikol-solis/spatgeom/issues
 Encoding: UTF-8
-LazyData: true 
-Imports: 
+LazyData: true
+Imports:
     ggplot2,
     scales,
     sf,
@@ -34,7 +34,7 @@ Imports:
 RoxygenNote: 7.2.0
 Roxygen: list(markdown=TRUE)
 Depends: R (>= 3.6.0)
-Suggests: 
+Suggests:
     rmarkdown,
     knitr,
     testthat (>= 2.1.0)
