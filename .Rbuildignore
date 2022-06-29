@@ -7,3 +7,4 @@
 ^README.*
 ^LICENSE\.md$
 ^CRAN-SUBMISSION$
+^NEWS\.md$
