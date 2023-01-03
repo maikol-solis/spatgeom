@@ -78,9 +78,38 @@ spatgeom <- function(x, y,
                      scale_pts = FALSE,
                      nalphas = 100,
                      envelope = FALSE,
-                     mc_cores = 1) {
+                     use_umap = FALSE,
+                     mc_cores = 1,
+                     ...) {
   if (missing(y)) {
-    message("Running with only x")
+    message("Running with only x.")
+
+    if (use_umap == TRUE && ncol(x) > 2) {
+      if (scale == TRUE) {
+        x <- as.matrix(scale(x))
+      }
+      dt <- umap::umap(x, ...)
+      xr <- dt$layout[, 1]
+      yr <- dt$layout[, 2]
+    } else if (ncol(x) == 2) {
+      xr <- x[, 1]
+      yr <- x[, 2]
+    } else {
+      stop(
+        "The matrix x has to be or:\n",
+        "1. A matrix with ncol(x) == 2.\n",
+        "2. A matrix with ncol(x) > 2 and setting use_umap = TRUE."
+      )
+    }
+
+    spatgeom_xy(
+      x = xr,
+      y = yr,
+      scale = scale,
+      nalphas = nalphas,
+      envelope = envelope,
+      mc_cores = mc_cores
+    )
   } else {
     message("Running with x and y")
     spatgeom_xy(x, y,
