@@ -38,13 +38,13 @@
 
 plot_curve <-
   function(x,
-           type = c("curve", "deriv"),
+           type = "curve",
            font_size = 12) {
     # Number of variables
     nvar <- length(x$results)
 
     # variables bindings for R CMD check
-    df <- df_fp <- alpha <- geom_corr <- variable <- y <- NULL
+    df <- df_fp <- alpha <- geom_corr <- variable <- y <- nsim <- NULL
 
     for (k in 1:nvar) {
       df <- rbind(
@@ -74,7 +74,7 @@ plot_curve <-
       for (k in 1:nvar) {
         plt <- plt +
           ggplot2::geom_function(
-            data = subset(df, variable == colnames(x)[k]),
+            data = subset(df, variable == colnames(x$x)[k]),
             fun = function(x, intensity) {
               exp(-intensity * pi * x^2)
             },
@@ -82,7 +82,16 @@ plot_curve <-
             linetype = "dashed",
             color = "red", size = 1
           )
+
+        if (!is.null(x$results[[k]]$envelope_data)) {
+          plt <- plt +
+            ggplot2::geom_line(
+              data = x$results[[k]]$envelope_data,
+              mapping = ggplot2::aes(x, y, group = nsim), color = "lightgrey"
+            )
+        }
       }
+
 
 
       plt <- plt +
