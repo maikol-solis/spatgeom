@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2023-02-14
+
+### Bug Fixes
+
+- Change alphastats to spatgeom in manual
+
+### Features
+
+- Include envelope plots
+
 ## 0.1.0
 
 This is the initial release for `spatgeom`. 
