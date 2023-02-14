@@ -4,14 +4,14 @@
 \alias{plot_curve}
 \title{plot \code{spatgeom} objects}
 \usage{
-plot_curve(x, type = c("curve", "deriv"), font_size = 12)
+plot_curve(x, type = "curve", font_size = 12)
 }
 \arguments{
 \item{x}{an object of class \code{spatgeom}}
 
 \item{type}{a string that could be \code{curve} or \code{deriv}. The option
 \code{curve} plots the curve of \code{alpha} against \code{geom_corr} from
-the function \code{\link[=alphastats]{alphastats()}}. The \code{deriv} option plots the
+the function \code{\link[=spatgeom]{spatgeom()}}. The \code{deriv} option plots the
 numerical derivative.}
 
 \item{font_size}{a integer that increases the font size in the plot.}
@@ -20,7 +20,7 @@ numerical derivative.}
 a \code{\link[ggplot2]{ggplot}} object with the geometric indices (or
 its derivative). The plot is generated with the \code{nalphas} point of
 \code{alpha} and \code{geom_corr} from the function
-\code{\link{alphastats}}.
+\code{\link{spatgeom}}.
 
 In each panel, the theoretical CSR process is drawn using
 \code{exp(-intensity * pi * x^2)}. where the intensity depends on each
@@ -40,7 +40,7 @@ X2 <- runif(n, a, b)
 Y <- data.frame(Y = r * sin(theta))
 X <- data.frame(X1, X2)
 
-estimation <- alphastats(y = Y, x = X)
+estimation <- spatgeom(y = Y, x = X)
 
 plot_curve(estimation, type = "curve")
 

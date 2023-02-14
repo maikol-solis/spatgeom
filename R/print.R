@@ -8,7 +8,7 @@
 #'   \code{FALSE}
 #' @param ... further arguments passed to the \code{plot} function
 #'
-#' @return Print the estimate given by \code{\link{alphastats}}.
+#' @return Print the estimate given by \code{\link{spatgeom}}.
 #' @export
 #'
 #' @examples
@@ -22,7 +22,7 @@
 #' Y <- data.frame(Y = r * sin(theta))
 #' X <- data.frame(X1, X2)
 #'
-#' estimation <- alphastats(y = Y, x = X)
+#' estimation <- spatgeom(y = Y, x = X)
 #'
 #' print(estimation)
 #'

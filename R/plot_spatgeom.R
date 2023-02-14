@@ -22,7 +22,7 @@
 #' Y <- data.frame(Y = r * sin(theta))
 #' X <- data.frame(X1, X2)
 #'
-#' estimation <- alphastats(y = Y, x = X)
+#' estimation <- spatgeom(y = Y, x = X)
 #'
 #' plot_alpha_shape(estimation, alpha = c(0.9, 1.2))
 #' @export

@@ -16,7 +16,7 @@ estimated values. Otherwise, print the data frame in console. Defaults to
 \item{...}{further arguments passed to the \code{plot} function}
 }
 \value{
-Print the estimate given by \code{\link{alphastats}}.
+Print the estimate given by \code{\link{spatgeom}}.
 }
 \description{
 Print method for objects of class \code{spatgeom}.
@@ -32,7 +32,7 @@ X2 <- runif(n, a, b)
 Y <- data.frame(Y = r * sin(theta))
 X <- data.frame(X1, X2)
 
-estimation <- alphastats(y = Y, x = X)
+estimation <- spatgeom(y = Y, x = X)
 
 print(estimation)
 
