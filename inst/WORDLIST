@@ -1,0 +1,5 @@
+config
+pre
+Rbuildignore
+WORDLIST
+yaml
