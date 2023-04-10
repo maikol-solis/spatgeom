@@ -39,4 +39,3 @@ This is the initial release for `spatgeom`.
 - Delete old barcode and plots implementations.
 - Remove unused code overall all the package.  
 - Split plot functions into `plot_curves` and `plot_alphashapes`.
-

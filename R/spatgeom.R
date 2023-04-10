@@ -75,10 +75,10 @@
 
 
 spatgeom <- function(x, y,
-                       scale = FALSE,
-                       nalphas = 100,
-                       envelope = FALSE,
-                       mc_cores = 1) {
+                     scale = FALSE,
+                     nalphas = 100,
+                     envelope = FALSE,
+                     mc_cores = 1) {
   if (missing(y)) {
     message("Running with only x")
   } else {
@@ -95,10 +95,10 @@ spatgeom <- function(x, y,
 
 
 spatgeom_xy <- function(x, y,
-                          scale = FALSE,
-                          nalphas = 100,
-                          envelope = FALSE,
-                          mc_cores = 2) {
+                        scale = FALSE,
+                        nalphas = 100,
+                        envelope = FALSE,
+                        mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
