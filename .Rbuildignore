@@ -1,10 +1,11 @@
 ^.*\.Rproj$
-^\.Rproj\.user$
 ^CONDUCT\.md$
+^CRAN-RELEASE.*
+^CRAN-SUBMISSION$
+^LICENSE\.md$
+^NEWS\.md$
+^README.*
+^\.Rproj\.user$
+^\.pre-commit-config\.yaml$
 ^\.travis\.yml$
 ^cran-comments\.md$
-^CRAN-RELEASE.*
-^README.*
-^LICENSE\.md$
-^CRAN-SUBMISSION$
-^NEWS\.md$
