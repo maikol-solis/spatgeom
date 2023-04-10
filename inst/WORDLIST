@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 albertojose
 alphastats
 aut
@@ -46,5 +47,10 @@ spatgeom
 sublicense
 testthat
 ucr
+=======
+config
+pre
+Rbuildignore
+>>>>>>> 216fb6d (chore: add pre-commit config)
 WORDLIST
 yaml
