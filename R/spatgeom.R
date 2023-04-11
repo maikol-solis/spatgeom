@@ -35,7 +35,7 @@
 #' The \code{segments} column are the segments of each individual triangle and
 #' \code{max_length} is the maximum length of them.}
 #'
-#' \item{\strong{data_frame_triangles}}{a data frame with columns \code{alpha}
+#' \item{\strong{geom_indices}}{a data frame with columns \code{alpha}
 #'  and \code{geom_corr}. The \code{alpha} column is a numeric vector of size
 #'  \code{nalphas} from the minimum to the maximum distance between points
 #'  estimated in the data. The \code{geom_corr} column is the value \code{1 -
@@ -158,9 +158,9 @@ spatgeom_xy <- function(x, y,
             )
           enve_approx <-
             stats::approx(
-              x = enve$data_frame_triangles$alpha,
-              y = enve$data_frame_triangles$geom_corr,
-              xout = out_list[[i]]$data_frame_triangles$alpha
+              x = enve$geom_indices$alpha,
+              y = enve$geom_indices$geom_corr,
+              xout = out_list[[i]]$geom_indices$alpha
             )
           data.frame(enve_approx, nsim = k)
         }
@@ -253,7 +253,7 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
     x$geom_corr
   })
 
-  data_frame_triangles <- data.frame(
+  geom_indices <- data.frame(
     alpha = alpha_seq,
     geom_corr,
   )
@@ -261,7 +261,7 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
   return(
     list(
       triangles = triangles,
-      data_frame_triangles = data_frame_triangles,
+      geom_indices = geom_indices,
       intensity = intensity,
       mean_n = sf::st_area(bb) * intensity
     )

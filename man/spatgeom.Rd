@@ -44,7 +44,7 @@ Delanauy triangulation for the corresponding column of \code{x} and \code{y}.
 The \code{segments} column are the segments of each individual triangle and
 \code{max_length} is the maximum length of them.}
 
-\item{\strong{data_frame_triangles}}{a data frame with columns \code{alpha}
+\item{\strong{geom_indices}}{a data frame with columns \code{alpha}
 and \code{geom_corr}. The \code{alpha} column is a numeric vector of size
 \code{nalphas} from the minimum to the maximum distance between points
 estimated in the data. The \code{geom_corr} column is the value \code{1 -
