@@ -1,8 +1,7 @@
 # All available hooks: https://pre-commit.com/hooks.html
 # R specific hooks: https://github.com/lorenzwalthert/precommit
-repos:
-=======
   # run this once in the repo `pre-commit install --hook-type commit-msg`
+repos:
 -   repo: https://github.com/compilerla/conventional-pre-commit
     rev: v2.1.1
     hooks:
