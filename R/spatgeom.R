@@ -227,7 +227,7 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
     )
   triangles <- triangles[order(triangles$alpha), ]
 
-  geom_corr <- geom_sens <- NULL
+  geom_corr <- NULL
   d_min <- min(triangles$alpha)
   d_max <- max(triangles$alpha)
   alpha_seq <- seq(d_min, d_max * 1.1, length.out = nalphas)
@@ -238,43 +238,24 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
       alpha_shape <- subset(triangles, alpha <= s)
       if (nrow(alpha_shape) > 0) {
         poly_union <- sf::st_union(alpha_shape$geometry)
-        poly_reflection <- estimate_symmetric_reflection(poly_union)
 
         ## Geometric R2 index
         geom_corr <-
           1 - sf::st_area(poly_union) / sf::st_area(bb)
-        ###############################################################
-        ## TODO The geom sensitivity part needs work, in particular the
-        ## interpretation of the results
-        ###############################################################
-        poly_sym_difference <-
-          sf::st_sym_difference(poly_union, poly_reflection)
-        geom_sens <-
-          sf::st_area(poly_sym_difference) / (2 * sf::st_area(poly_union))
-        ## poly_sym_difference_bb <-
-        ##   sf::st_sym_difference(bb, poly_sym_difference)
-        ## geom_sens2 <- sf::st_area(poly_sym_difference_bb) /
-        ## sf::st_area(bb)
-        ###############################################################
       } else {
         geom_corr <- 1
-        geom_sens <- 1
       }
-      return(list(geom_corr = geom_corr, geom_sens = geom_sens))
+      return(list(geom_corr = geom_corr))
     }
   )
 
   geom_corr <- sapply(out, function(x) {
     x$geom_corr
   })
-  geom_sens <- sapply(out, function(x) {
-    x$geom_sens
-  })
 
   data_frame_triangles <- data.frame(
     alpha = alpha_seq,
     geom_corr,
-    geom_sens
   )
 
   return(
