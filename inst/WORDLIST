@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 albertojose
 alphastats
 aut
@@ -39,6 +38,7 @@ purrr
 Rbuildignore
 rmarkdown
 Roxygen
+roxygenize
 RoxygenNote
 SHA
 solis
@@ -47,10 +47,5 @@ spatgeom
 sublicense
 testthat
 ucr
-=======
-config
-pre
-Rbuildignore
->>>>>>> 216fb6d (chore: add pre-commit config)
 WORDLIST
 yaml
