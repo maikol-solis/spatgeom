@@ -10,6 +10,7 @@ Comput
 config
 cowplot
 cr
+cran
 cre
 CSR
 ctb
@@ -29,6 +30,7 @@ LazyData
 lwgeom
 Maikol
 maikol
+md
 MERCHANTABILITY
 NONINFRINGEMENT
 Pasquier
@@ -36,6 +38,7 @@ pasquier
 pre
 purrr
 Rbuildignore
+README
 rmarkdown
 Roxygen
 roxygenize
