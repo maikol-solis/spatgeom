@@ -215,7 +215,6 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
       max(sf::st_length(sf::st_cast(sf::st_sfc(x))))
     })
 
-  alpha <- NULL
   triangles <-
     sf::st_sf(
       list(
@@ -228,14 +227,12 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
   triangles <- triangles[order(triangles$alpha), ]
 
   geom_corr <- NULL
-  d_min <- min(triangles$alpha)
-  d_max <- max(triangles$alpha)
-  alpha_seq <- seq(d_min, d_max * 1.1, length.out = nalphas)
 
   out <- lapply(
-    X = alpha_seq,
-    FUN = function(s) {
-      alpha_shape <- subset(triangles, alpha <= s)
+    X = seq_along(triangles$alpha),
+    FUN = function(k) {
+      alpha_shape <- triangles[1:k, ]
+
       if (nrow(alpha_shape) > 0) {
         poly_union <- sf::st_union(alpha_shape$geometry)
 
@@ -254,8 +251,8 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
   })
 
   geom_indices <- data.frame(
-    alpha = alpha_seq,
-    geom_corr,
+    alpha = triangles$alpha,
+    geom_corr = geom_corr
   )
 
   return(
