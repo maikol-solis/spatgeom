@@ -67,17 +67,17 @@ Function to estimate the geometric correlation between
 variables.
 }
 \examples{
-n <- 30
-a <- -1
-b <- 1
-theta <- runif(n, 0, 2 * pi)
-r <- (sqrt(runif(n))) * (0.5) + 0.5
-X1 <- r * cos(theta)
-X2 <- runif(n, a, b)
-Y <- data.frame(Y = r * sin(theta))
-X <- data.frame(X1, X2)
+xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
+estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 
-estimation <- spatgeom(y = Y, x = X)
+# If you want to estimate the envelope, you can use the envelope argument to
+# TRUE. This will take a while to run.
+\dontrun{
+estimation_with_envelope <- spatgeom(
+  y = xy[, 1], x = xy[, -1],
+  envelope = TRUE
+)
+}
 }
 \references{
 Hernández, A.J., Solís, M. Geometric goodness of fit measure to detect

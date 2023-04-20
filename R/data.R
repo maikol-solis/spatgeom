@@ -11,7 +11,7 @@
 #'   variable 'x1' makes the donut shape with 'y', and 'x2' is a uniform random
 #'   variable between a and b. '
 #' @examples
-#' xy <- donut_data(n = 100, a = -1, b = 1, theta = 2 * pi)
+#' xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
 #' @export
 donut_data <- function(n, a, b, theta) {
   theta <- stats::runif(n, 0, theta)

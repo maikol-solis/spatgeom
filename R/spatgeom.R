@@ -60,17 +60,17 @@
 #' https://doi.org/10.1007/s00180-022-01244-1
 #'
 #' @examples
-#' n <- 30
-#' a <- -1
-#' b <- 1
-#' theta <- runif(n, 0, 2 * pi)
-#' r <- (sqrt(runif(n))) * (0.5) + 0.5
-#' X1 <- r * cos(theta)
-#' X2 <- runif(n, a, b)
-#' Y <- data.frame(Y = r * sin(theta))
-#' X <- data.frame(X1, X2)
+#' xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
+#' estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 #'
-#' estimation <- spatgeom(y = Y, x = X)
+#' # If you want to estimate the envelope, you can use the envelope argument to
+#' # TRUE. This will take a while to run.
+#' \dontrun{
+#' estimation_with_envelope <- spatgeom(
+#'   y = xy[, 1], x = xy[, -1],
+#'   envelope = TRUE
+#' )
+#' }
 #' @export
 
 
@@ -132,42 +132,14 @@ spatgeom_xy <- function(x, y,
 
 
   if (envelope == TRUE) {
-    for (i in seq_len(ncol(x))) {
-      message(paste0("Estimating envelope for variable = ", i))
-      envelope_data <-
-        data.frame(
-          y = numeric(),
-          x = numeric(),
-          nsim = numeric()
-        )
-
-      envelope_data <- parallel::mclapply(
-        mc.cores = mc_cores,
-        X = seq_len(40),
-        FUN = function(k) {
-          n <- stats::rpois(1, lambda = out_list[[i]]$mean_n)
-          x <- stats::runif(n, min = min(x[, i]), max = max(x[, i]))
-          y <- stats::runif(n, min = min(y[, 1]), max = max(y[, 1]))
-          enve <-
-            estimate_curves(
-              x1 = x,
-              x2 = y,
-              scale = scale,
-              nalphas = nalphas,
-              intensity = out_list[[i]]$intensity
-            )
-          enve_approx <-
-            stats::approx(
-              x = enve$geom_indices$alpha,
-              y = enve$geom_indices$geom_corr,
-              xout = out_list[[i]]$geom_indices$alpha
-            )
-          data.frame(enve_approx, nsim = k)
-        }
-      )
-      envelope_data <- do.call("rbind", envelope_data)
-      out_list[[i]]$envelope_data <- envelope_data
-    }
+    out_list <- estimate_envelope(
+      triangles_list = out_list,
+      x = x,
+      y = y,
+      scale = scale,
+      nalphas = nalphas,
+      mc_cores = mc_cores
+    )
   }
 
   ans[["results"]] <- out_list
@@ -263,4 +235,48 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
       mean_n = sf::st_area(bb) * intensity
     )
   )
+}
+
+estimate_envelope <- function(triangles_list,
+                              x,
+                              y,
+                              scale,
+                              nalphas,
+                              mc_cores = 2) {
+  for (i in seq_len(ncol(x))) {
+    message(paste0("Estimating envelope for variable = ", i))
+    envelope_data <-
+      data.frame(
+        y = numeric(),
+        x = numeric(),
+        nsim = numeric()
+      )
+
+    envelope_data <- parallel::mclapply(
+      mc.cores = mc_cores,
+      X = seq_len(40),
+      FUN = function(k) {
+        n <- stats::rpois(1, lambda = triangles_list[[i]]$mean_n)
+        x <- stats::runif(n, min = min(x[, i]), max = max(x[, i]))
+        y <- stats::runif(n, min = min(y[, 1]), max = max(y[, 1]))
+        enve <-
+          estimate_curves(
+            x1 = x,
+            x2 = y,
+            scale = scale,
+            nalphas = nalphas,
+            intensity = triangles_list[[i]]$intensity
+          )
+        enve_approx <-
+          stats::approx(
+            x = enve$geom_indices$alpha,
+            y = enve$geom_indices$geom_corr,
+            xout = triangles_list[[i]]$geom_indices$alpha
+          )
+        data.frame(enve_approx, nsim = k)
+      }
+    )
+    envelope_data <- do.call("rbind", envelope_data)
+    triangles_list[[i]]$envelope_data <- envelope_data
+  }
 }
