@@ -12,17 +12,9 @@
 #'
 #'
 #' @examples
-#' n <- 30
-#' a <- -1
-#' b <- 1
-#' theta <- runif(n, 0, 2 * pi)
-#' r <- (sqrt(runif(n))) * (0.5) + 0.5
-#' X1 <- r * cos(theta)
-#' X2 <- runif(n, a, b)
-#' Y <- data.frame(Y = r * sin(theta))
-#' X <- data.frame(X1, X2)
+#' xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
 #'
-#' estimation <- spatgeom(y = Y, x = X)
+#' estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 #'
 #' plot_alpha_shape(estimation, alpha = c(0.9, 1.2))
 #' @export
@@ -62,20 +54,4 @@ plot_alpha_shape <- function(x, alpha, font_size = 12) {
     cowplot::theme_cowplot(font_size = font_size) +
     cowplot::background_grid(minor = "y") +
     cowplot::panel_border()
-
-  # p <- ggplot2::ggplot(x$results[[1]]$triangles%>%
-  #                   dplyr::mutate(alpha_reveal = 2 * max_length)) +
-  #   ggplot2::geom_sf(
-  #     mapping = aes(geometry = geometry),
-  #     fill = "skyblue1",
-  #     color = "grey30",
-  #     size = 0.1
-  #   ) +
-  #   # ggplot2::facet_wrap(. ~ variable) +
-  #   cowplot::theme_cowplot(font_size = font_size) +
-  #   cowplot::background_grid(minor = "y") +
-  #   cowplot::panel_border() +
-  #   gganimate::transition_time(alpha_reveal)
-  #
-  # gganimate::animate(p)
 }

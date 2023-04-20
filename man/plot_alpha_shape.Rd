@@ -22,17 +22,9 @@ the original data at resolution \code{alpha}
 Plot alpha-shape for \code{spatgeom} objects.
 }
 \examples{
-n <- 30
-a <- -1
-b <- 1
-theta <- runif(n, 0, 2 * pi)
-r <- (sqrt(runif(n))) * (0.5) + 0.5
-X1 <- r * cos(theta)
-X2 <- runif(n, a, b)
-Y <- data.frame(Y = r * sin(theta))
-X <- data.frame(X1, X2)
+xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
 
-estimation <- spatgeom(y = Y, x = X)
+estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 
 plot_alpha_shape(estimation, alpha = c(0.9, 1.2))
 }

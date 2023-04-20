@@ -19,17 +19,10 @@
 #'   panel.
 #'
 #' @examples
-#' n <- 30
-#' a <- -1
-#' b <- 1
-#' theta <- runif(n, 0, 2 * pi)
-#' r <- (sqrt(runif(n))) * (0.5) + 0.5
-#' X1 <- r * cos(theta)
-#' X2 <- runif(n, a, b)
-#' Y <- data.frame(Y = r * sin(theta))
-#' X <- data.frame(X1, X2)
 #'
-#' estimation <- spatgeom(y = Y, x = X)
+#' xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
+#'
+#' estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 #'
 #' plot_curve(estimation, type = "curve")
 #'
@@ -49,7 +42,7 @@ plot_curve <-
     for (k in 1:nvar) {
       df <- rbind(
         cbind(
-          x$results[[k]]$data_frame_triangles,
+          x$results[[k]]$geom_indices,
           variable = colnames(x$x)[k],
           intensity = x$results[[k]]$intensity
         ),
@@ -58,9 +51,9 @@ plot_curve <-
 
 
       df_fp <- rbind(data.frame(
-        x = x$results[[k]]$data_frame_triangles$alpha[-1],
-        y = diff(x$results[[k]]$data_frame_triangles$geom_corr) /
-          diff(x$results[[k]]$data_frame_triangles$alpha),
+        x = x$results[[k]]$geom_indices$alpha[-1],
+        y = diff(x$results[[k]]$geom_indices$geom_corr) /
+          diff(x$results[[k]]$geom_indices$alpha),
         variable = colnames(x$x)[k]
       ), df_fp)
     }
