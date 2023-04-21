@@ -67,7 +67,7 @@ plot_curve <-
         envelope_ribbon <- dplyr::group_by(.data = envelope_ribbon, x)
         envelope_ribbon <- dplyr::summarise(
           .data = envelope_ribbon,
-          ymin = min(y), ymax = max(y)
+          ymin = min(y, na.rm = TRUE), ymax = max(y, na.rm = TRUE)
         )
         plt <- plt +
           ggplot2::geom_ribbon(
