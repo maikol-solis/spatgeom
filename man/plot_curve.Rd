@@ -38,4 +38,5 @@ estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 plot_curve(estimation, type = "curve")
 
 plot_curve(estimation, type = "deriv")
+
 }

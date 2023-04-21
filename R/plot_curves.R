@@ -27,6 +27,7 @@
 #' plot_curve(estimation, type = "curve")
 #'
 #' plot_curve(estimation, type = "deriv")
+#'
 #' @export
 
 plot_curve <-
@@ -37,7 +38,7 @@ plot_curve <-
     nvar <- length(x$results)
 
     # variables bindings for R CMD check
-    df <- df_fp <- alpha <- geom_corr <- variable <- y <- nsim <- NULL
+    df <- df_fp <- alpha <- geom_corr <- variable <- y <- ymin <- ymax <- NULL
 
     for (k in 1:nvar) {
       df <- rbind(
@@ -59,10 +60,27 @@ plot_curve <-
     }
 
     if (type == "curve") {
-      plt <- ggplot2::ggplot(df) +
-        ggplot2::geom_step(ggplot2::aes(x = alpha, y = geom_corr),
-          size = 1
+      plt <- ggplot2::ggplot(df)
+
+      if (!is.null(x$results[[k]]$envelope_data)) {
+        envelope_ribbon <- x$results[[k]]$envelope_data
+        envelope_ribbon <- dplyr::group_by(.data = envelope_ribbon, x)
+        envelope_ribbon <- dplyr::summarise(
+          .data = envelope_ribbon,
+          ymin = min(y), ymax = max(y)
         )
+        plt <- plt +
+          ggplot2::geom_ribbon(
+            data = envelope_ribbon,
+            ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
+            alpha = 0.2
+          )
+      }
+
+
+      plt <- plt + ggplot2::geom_step(ggplot2::aes(x = alpha, y = geom_corr),
+        size = 1
+      )
 
       for (k in 1:nvar) {
         plt <- plt +
@@ -75,14 +93,6 @@ plot_curve <-
             linetype = "dashed",
             color = "red", size = 1
           )
-
-        if (!is.null(x$results[[k]]$envelope_data)) {
-          plt <- plt +
-            ggplot2::geom_line(
-              data = x$results[[k]]$envelope_data,
-              mapping = ggplot2::aes(x, y, group = nsim), color = "lightgrey"
-            )
-        }
       }
 
 
