@@ -279,4 +279,5 @@ estimate_envelope <- function(triangles_list,
     envelope_data <- do.call("rbind", envelope_data)
     triangles_list[[i]]$envelope_data <- envelope_data
   }
+  return(triangles_list)
 }
