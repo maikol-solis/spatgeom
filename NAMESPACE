@@ -2,6 +2,7 @@
 
 S3method(print,spatgeom)
 export(donut_data)
+export(linear_data)
 export(plot_alpha_shape)
 export(plot_curve)
 export(spatgeom)

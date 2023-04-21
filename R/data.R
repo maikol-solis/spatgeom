@@ -21,3 +21,24 @@ donut_data <- function(n, a, b, theta) {
     x1 = r * cos(theta), x2 = runif(n, a, b)
   ))
 }
+
+
+#' @title Linear example
+#' @description Generate data points with a linear relationship.
+#' @param n Number of data points.
+#' @param a,b Lower and upper bound of the uniform distribution.
+#' @return A data frame with three variables. Variable 'y' is the response, and
+#'   'x1' and 'x2' are uniform random variables between a and b.
+#' @examples
+#' xy <- linear_data(n = 30, a = -1, b = 1)
+#' @export
+
+
+linear_data <- function(n = 100, a = -3, b = 3) {
+  x1 <- runif(n, a, b)
+  x2 <- runif(n, a, b)
+  xnoise <- matrix(runif(n * 1, a, b), nrow = n)
+  x <- data.frame(x1, x2, X3 = xnoise)
+  y <- data.frame(y = 0.6 * x1 + 0.3 * x2 + 0.1 * xnoise)
+  return(cbind(y, x))
+}
