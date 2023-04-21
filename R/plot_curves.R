@@ -69,6 +69,11 @@ plot_curve <-
           .data = envelope_ribbon,
           ymin = min(y, na.rm = TRUE), ymax = max(y, na.rm = TRUE)
         )
+        envelope_ribbon <- dplyr::filter(
+          .data = envelope_ribbon,
+          is.finite(ymin) & is.finite(ymax)
+        )
+
         plt <- plt +
           ggplot2::geom_ribbon(
             data = envelope_ribbon,
