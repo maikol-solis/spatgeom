@@ -1,5 +1,3 @@
-
-
 estimate_symmetric_reflection <- function(polygon) {
   affine_transformation <- matrix(c(1, 0, 0, -1), 2, 2)
   cntrd <- sf::st_centroid(polygon)
@@ -64,4 +62,25 @@ num_deriv <- function(y, x) {
   fdx[n] <- (y[n] - y[n - 1]) / (x[n] - x[n - 1])
 
   return(fdx)
+}
+
+
+
+central_difference_derivate <- function(x, y) {
+  # estimate the central difference of the derivative
+  # of y with respect to x
+  # x and y are vectors of the same length
+  # returns a vector of length n-1
+  if (length(x) != length(y)) {
+    stop("x and y must be the same length")
+  }
+  if (length(x) < 2) {
+    stop("x and y must have length >= 2")
+  }
+  dx <- diff(x)
+  dy <- diff(y)
+  n <- length(dx)
+  y <- (dy[-n] + dy[-1]) / (dx[-n] + dx[-1])
+  x <- x[-c(1, length(x))]
+  return(list(x = x, y = y))
 }

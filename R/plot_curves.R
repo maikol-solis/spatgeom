@@ -50,11 +50,23 @@ plot_curve <-
         df
       )
 
+      x_curve <- x$results[[k]]$geom_indices$alpha
+      y_curve <- x$results[[k]]$geom_indices$geom_corr
+
+      suppressWarnings(
+        curve_regularized <- stats::approx(
+          x_curve,
+          y_curve,
+          n = length(x_curve),
+        )
+      )
+
+      dx <- diff(curve_regularized$x)
+      dy <- diff(curve_regularized$y)
 
       df_fp <- rbind(data.frame(
-        x = x$results[[k]]$geom_indices$alpha[-1],
-        y = diff(x$results[[k]]$geom_indices$geom_corr) /
-          diff(x$results[[k]]$geom_indices$alpha),
+        x = curve_regularized$x[-length(curve_regularized$x)],
+        y = dy / dx,
         variable = colnames(x$x)[k]
       ), df_fp)
     }
@@ -78,13 +90,13 @@ plot_curve <-
           ggplot2::geom_ribbon(
             data = envelope_ribbon,
             ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
-            alpha = 0.2
+            alpha = 0.7, fill = "grey"
           )
       }
 
 
       plt <- plt + ggplot2::geom_step(ggplot2::aes(x = alpha, y = geom_corr),
-        size = 1
+        linewidth = 1
       )
 
       for (k in 1:nvar) {
@@ -96,7 +108,8 @@ plot_curve <-
             },
             args = list(intensity = x$results[[k]]$intensity),
             linetype = "dashed",
-            color = "red", size = 1
+            color = "red",
+            linewidth = 1
           )
       }
 
@@ -113,8 +126,14 @@ plot_curve <-
         cowplot::background_grid(minor = "y") +
         cowplot::panel_border()
     } else if (type == "deriv") {
-      plt <- ggplot2::ggplot(df) +
-        ggplot2::geom_line(data = df_fp, ggplot2::aes(x, y), size = 1) +
+      plt <- ggplot2::ggplot(data = df_fp, ggplot2::aes(x, y)) +
+        ggplot2::geom_point(color = "grey", alpha = 0.7) +
+        ggplot2::geom_smooth(
+          linewidth = 1,
+          se = FALSE,
+          method = "gam",
+          formula = y ~ s(x, bs = "cs")
+        ) +
         ggplot2::scale_y_continuous(name = expression(f * minute(alpha))) +
         ggplot2::scale_x_continuous(
           name = expression(alpha),
