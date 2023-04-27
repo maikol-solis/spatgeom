@@ -4,7 +4,16 @@
 \alias{spatgeom}
 \title{Geometric Spatial Point Pattern Analysis}
 \usage{
-spatgeom(x, y, scale = FALSE, nalphas = 100, envelope = FALSE, mc_cores = 1)
+spatgeom(
+  x,
+  y,
+  scale = FALSE,
+  nalphas = 100,
+  envelope = FALSE,
+  hypothesis_testing = FALSE,
+  significance_level = 0.05,
+  mc_cores = 1
+)
 }
 \arguments{
 \item{x}{numeric matrix or data.frame of covariables.}
