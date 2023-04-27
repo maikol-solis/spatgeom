@@ -78,6 +78,8 @@ spatgeom <- function(x, y,
                      scale = FALSE,
                      nalphas = 100,
                      envelope = FALSE,
+                     hypothesis_testing = FALSE,
+                     significance_level = 0.05,
                      mc_cores = 1) {
   if (missing(y)) {
     message("Running with only x")
@@ -87,6 +89,8 @@ spatgeom <- function(x, y,
       scale = scale,
       nalphas = nalphas,
       envelope = envelope,
+      hypothesis_testing = FALSE,
+      significance_level = significance_level,
       mc_cores = mc_cores
     )
   }
@@ -98,7 +102,9 @@ spatgeom_xy <- function(x, y,
                         scale = FALSE,
                         nalphas = 100,
                         envelope = FALSE,
-                        mc_cores = 2) {
+                        significance_level = 0.05,
+                        hypothesis_testing = FALSE,
+                        mc_cores = 1) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
@@ -144,6 +150,19 @@ spatgeom_xy <- function(x, y,
 
   ans[["results"]] <- out_list
   class(ans) <- "spatgeom"
+
+
+
+
+  if (hypothesis_testing) {
+
+
+
+  }
+
+
+
+
   return(ans)
 }
 

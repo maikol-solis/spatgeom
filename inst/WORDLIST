@@ -14,8 +14,10 @@ cr
 cran
 cre
 CSR
+csr
 ctb
 dcf
+DCLF
 Delanauy
 df
 doi
@@ -25,9 +27,11 @@ eafc
 geomsensitivity
 ggplot
 github
+GolbalEnvelope
 hernandez
 Hernández
 https
+HypothesisTest
 knitr
 LazyData
 lwgeom
@@ -39,6 +43,7 @@ MV
 NONINFRINGEMENT
 Pasquier
 pasquier
+png
 pre
 purrr
 Rbuildignore
@@ -52,6 +57,7 @@ solis
 Solís
 spatgeom
 sublicense
+Tesis
 testthat
 ucr
 Untracked
