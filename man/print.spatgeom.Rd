@@ -25,8 +25,21 @@ Print method for objects of class \code{spatgeom}.
 
 xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
 
+# Basic print — shows alpha and geom_survival ranges per variable:
 estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
-
 print(estimation)
+
+\donttest{
+# Print a spatgeom object that includes hypothesis testing results:
+est_ht <- spatgeom(
+  y = xy[, 1], x = xy[, -1],
+  hypothesis_testing = TRUE, method = "MAD"
+)
+print(est_ht)
+
+# Return the underlying data frame instead of printing:
+tbl <- print(est_ht, return_table = TRUE)
+head(tbl)
+}
 
 }

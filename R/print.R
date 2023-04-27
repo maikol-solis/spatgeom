@@ -9,15 +9,27 @@
 #' @param ... further arguments passed to the \code{plot} function
 #'
 #' @return Print the estimate given by \code{\link{spatgeom}}.
-#' @export
 #'
 #' @examples
 #'
 #' xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
 #'
+#' # Basic print — shows alpha and geom_survival ranges per variable:
 #' estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
-#'
 #' print(estimation)
+#'
+#' \donttest{
+#' # Print a spatgeom object that includes hypothesis testing results:
+#' est_ht <- spatgeom(
+#'   y = xy[, 1], x = xy[, -1],
+#'   hypothesis_testing = TRUE, method = "MAD"
+#' )
+#' print(est_ht)
+#'
+#' # Return the underlying data frame instead of printing:
+#' tbl <- print(est_ht, return_table = TRUE)
+#' head(tbl)
+#' }
 #'
 #' @export
 #'
@@ -37,20 +49,19 @@ print.spatgeom <- function(x, return_table = FALSE, ...) {
   out <- do.call(rbind, out)
   out <- as.data.frame(out)
 
-
   if (return_table == TRUE) {
     return(out)
   }
 
   variable_name <- mean_n <-
-    intensity <- geom_corr <- alpha <- NULL
+    intensity <- geom_survival <- alpha <- NULL
   o <- dplyr::group_by(.data = out, variable_name)
   o <- dplyr::summarise(
     .data = o,
     mean_n = min(mean_n),
     intensity = min(intensity),
     alpha = dplyr::first(cut(alpha, breaks = 2)),
-    geom_corr = dplyr::first(cut(geom_corr, breaks = 2))
+    geom_survival = dplyr::first(cut(geom_survival, breaks = 2))
   )
 
   cat("\nCall:\n", deparse(x[["call"]]), "\n", sep = "")

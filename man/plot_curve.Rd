@@ -2,41 +2,56 @@
 % Please edit documentation in R/plot_curves.R
 \name{plot_curve}
 \alias{plot_curve}
-\title{plot \code{spatgeom} objects}
+\title{plot spatgeom objects with hypothesis testing results and confidence
+intervals}
 \usage{
 plot_curve(x, type = "curve", font_size = 12)
 }
 \arguments{
-\item{x}{an object of class \code{spatgeom}}
+\item{x}{an object of class \code{spatgeom}.}
 
-\item{type}{a string that could be \code{curve} or \code{deriv}. The option
-\code{curve} plots the curve of \code{alpha} against \code{geom_corr} from
-the function \code{\link[=spatgeom]{spatgeom()}}. The \code{deriv} option plots the
+\item{type}{a string: either \code{"curve"} (the default) or \code{"deriv"}.
+The option \code{"curve"} plots the survival curve (with envelopes and,
+if available, confidence intervals). The option \code{"deriv"} plots its
 numerical derivative.}
 
-\item{font_size}{a integer that increases the font size in the plot.}
+\item{font_size}{an integer controlling the font size in the plot.}
 }
 \value{
-a \code{\link[ggplot2]{ggplot}} object with the geometric indices (or
-its derivative). The plot is generated with the \code{nalphas} point of
-\code{alpha} and \code{geom_corr} from the function
-\code{\link{spatgeom}}.
-
-In each panel, the theoretical CSR process is drawn using
-\code{exp(-intensity * pi * x^2)}. where the intensity depends on each
-panel.
+a \code{ggplot} object.
 }
 \description{
-Plot method for objects of class \code{spatgeom}.
+Plot method for objects of class \code{spatgeom}. This method plots the
+geometric survival (i.e. empty–space) curve against \eqn{\alpha} along with:
+\itemize{
+\item the envelope from the Monte Carlo simulation (if computed),
+\item the theoretical CSR curve, and
+\item if hypothesis testing was performed, a ribbon representing the confidence
+interval (and a mean curve) from the test.
+}
 }
 \examples{
 
 xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
 
+# Basic plots — no envelope, no hypothesis testing:
 estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
-
 plot_curve(estimation, type = "curve")
-
 plot_curve(estimation, type = "deriv")
+
+\donttest{
+# Curve with Monte Carlo envelope ribbon (grey) and theoretical CSR curve
+# (red dashed):
+est_env <- spatgeom(y = xy[, 1], x = xy[, -1], envelope = TRUE)
+plot_curve(est_env, type = "curve")
+
+# Curve with hypothesis testing results: additionally shows the CSR mean
+# (blue dotted) and its confidence band (blue ribbon):
+est_ht <- spatgeom(
+  y = xy[, 1], x = xy[, -1],
+  hypothesis_testing = TRUE, method = "MAD"
+)
+plot_curve(est_ht, type = "curve")
+}
 
 }
