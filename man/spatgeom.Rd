@@ -11,7 +11,11 @@ spatgeom(
   nalphas = 100,
   envelope = FALSE,
   domain_type = c("bounding-box", "convex-hull"),
-  mc_cores = 1
+  hypothesis_testing = FALSE,
+  significance_level = 0.05,
+  mc_cores = 1,
+  r = 0.5,
+  method = c("MAD", "DCLF")
 )
 }
 \arguments{
@@ -31,8 +35,25 @@ Default \code{FALSE}.}
 \item{domain_type}{character with the type of domain to use. It can be either
 "bounding-box" or "convex-hull". Default "bounding-box".}
 
+\item{hypothesis_testing}{logical. If \code{TRUE}, performs a CSR hypothesis
+test using a global envelope approach after estimating the geometric
+survival curves. Automatically sets \code{envelope = TRUE}. Default
+\code{FALSE}.}
+
+\item{significance_level}{a numeric significance level passed to
+\code{\link{csr_test}}. Default \code{0.05}.}
+
 \item{mc_cores}{integer with the number of parallel process to run (if
 available). Default \code{1}.}
+
+\item{r}{numeric scaling parameter for the theoretical CSR curve used in
+\code{\link{csr_test}}: \eqn{\exp(-\lambda \pi (\alpha r)^2)}. Default
+\code{0.5}.}
+
+\item{method}{character, one of \code{"MAD"} (Maximum Absolute Deviation)
+or \code{"DCLF"} (Diggle-Cressie-Loosmore-Ford). Specifies the global
+envelope test statistic passed to \code{\link{csr_test}}. Default
+\code{"MAD"}.}
 }
 \value{
 A list of class \code{spatgeom} with  the following elements:
@@ -69,25 +90,45 @@ column of \code{x} and \code{y}.}
 \item{\strong{envelope_data}}{a data frame in tidy format with 40 runs of a
 CSR process, if \code{envelope=TRUE}, The CSR is created by generating
 \emph{n} uniform points in the plane, where \emph{n} is drawn from Poisson
-distribution with parameter \code{mean_n}.
+distribution with parameter \code{mean_n}.}
 
-}}}}
+}}
+
+\item{\strong{hypothesis_testing_results}}{Only present when
+\code{hypothesis_testing = TRUE}. A list returned by
+\code{\link{csr_test}} with elements \code{hypothesis_testing_df} (a data
+frame of test statistics and confidence bands for all variables) and
+\code{details} (per-variable summary tables of the test results).}
+}
 }
 \description{
 Function to estimate the geometric correlation between
 variables.
 }
 \examples{
-xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
-estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
 
-# If you want to estimate the envelope, you can use the envelope argument to
-# TRUE. This will take a while to run.
-\dontrun{
-estimation_with_envelope <- spatgeom(
+xy <- donut_data(n = 30, a = -1, b = 1, theta = 2 * pi)
+
+# Basic usage: estimate the geometric survival curves only.
+estimation <- spatgeom(y = xy[, 1], x = xy[, -1])
+print(estimation)
+
+\donttest{
+# With Monte Carlo envelope (takes a few seconds):
+est_env <- spatgeom(y = xy[, 1], x = xy[, -1], envelope = TRUE)
+plot_curve(est_env, type = "curve")
+
+# With integrated CSR hypothesis testing using the MAD statistic:
+est_ht <- spatgeom(
   y = xy[, 1], x = xy[, -1],
-  envelope = TRUE
+  hypothesis_testing = TRUE,
+  method = "MAD"
 )
+print(est_ht)
+plot_curve(est_ht, type = "curve")
+
+# Inspect the per-variable test results:
+est_ht$hypothesis_testing_results$details
 }
 }
 \references{

@@ -12,11 +12,9 @@ linear_data(n = 100, a = -3, b = 3)
 \item{a, b}{Lower and upper bound of the uniform distribution.}
 }
 \value{
-A data frame with three variables. Variable 'y = 0.6 * x1 + 0.3 * x2
-\itemize{
-\item 0.1 * x3' is the response, and 'x1', 'x2' and 'x3' are uniform random
-variables between a and b.
-}
+A data frame with four variables. Variable \code{y = 0.6 * x1 + 0.3
+  * x2 + 0.1 * x3} is the response, and \code{x1}, \code{x2} and \code{x3}
+are independent uniform random variables between \code{a} and \code{b}.
 }
 \description{
 Generate data points with a linear relationship.
