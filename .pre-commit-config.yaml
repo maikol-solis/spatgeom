@@ -1,34 +1,16 @@
 # All available hooks: https://pre-commit.com/hooks.html
 # R specific hooks: https://github.com/lorenzwalthert/precommit
-  # run this once in the repo `pre-commit install --hook-type commit-msg`
 repos:
--   repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v2.1.1
-    hooks:
-      - id: conventional-pre-commit
-        stages: [commit-msg]
-        args: [] # optional: list of Conventional Commits types to allow e.g. [feat, fix, ci, chore, test]
 -   repo: https://github.com/lorenzwalthert/precommit
     rev: v0.3.2.9007
     hooks: 
     -   id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style]    
     -   id: roxygenize
-        # roxygen requires loading pkg -> add dependencies from DESCRIPTION
-        additional_dependencies:
-        -    ggplot2
-        -    scales
-        -    sf
-        -    dplyr
-        -    lwgeom
-        -    cowplot
-        -    purrr
-        -    git2r
     # codemeta must be above use-tidy-description when both are used
     # -   id: codemeta-description-updated
     -   id: use-tidy-description
     -   id: spell-check
-        args: [--lang=en_US]
         exclude: >
           (?x)^(
           .*\.[rR]|
