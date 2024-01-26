@@ -31,7 +31,7 @@ Imports:
     lwgeom,
     cowplot,
     purrr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Roxygen: list(markdown=TRUE)
 Depends: R (>= 3.6.0)
 Suggests:

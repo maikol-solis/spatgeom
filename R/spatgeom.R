@@ -5,8 +5,8 @@
 #'
 #' @param x numeric matrix or data.frame of covariables.
 #' @param y numeric vector of responses in a model.
-#' @param scale boolean to make the estimations with scaled variables. Default
-#'   \code{FALSE}.
+#' @param scale_pts boolean to make the estimations with scaled variables.
+#'   Default \code{FALSE}.
 #' @param nalphas a single number for the number of alphas generated between the
 #'   minimum and maximum edge distance on the Delanauy triangulation.
 #' @param envelope boolean to determine if the Monte-Carlo is estimated. Default
@@ -75,7 +75,7 @@
 
 
 spatgeom <- function(x, y,
-                     scale = FALSE,
+                     scale_pts = FALSE,
                      nalphas = 100,
                      envelope = FALSE,
                      mc_cores = 1) {
@@ -84,7 +84,7 @@ spatgeom <- function(x, y,
   } else {
     message("Running with x and y")
     spatgeom_xy(x, y,
-      scale = scale,
+      scale_pts = scale_pts,
       nalphas = nalphas,
       envelope = envelope,
       mc_cores = mc_cores
@@ -95,7 +95,7 @@ spatgeom <- function(x, y,
 
 
 spatgeom_xy <- function(x, y,
-                        scale = FALSE,
+                        scale_pts = FALSE,
                         nalphas = 100,
                         envelope = FALSE,
                         mc_cores = 2) {
@@ -117,7 +117,7 @@ spatgeom_xy <- function(x, y,
       estimate_curves(
         x1 = x[, i],
         x2 = y[, 1],
-        scale = scale,
+        scale_pts = scale_pts,
         nalphas = nalphas
       )
     }
@@ -136,7 +136,7 @@ spatgeom_xy <- function(x, y,
       triangles_list = out_list,
       x = x,
       y = y,
-      scale = scale,
+      scale_pts = scale_pts,
       nalphas = nalphas,
       mc_cores = mc_cores
     )
@@ -157,8 +157,8 @@ spatgeom_x <- function(x, ...) {
 
 
 
-estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
-  if (scale) {
+estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
+  if (scale_pts) {
     pts <- sf::st_cast(
       sf::st_sfc(
         sf::st_multipoint(scales::rescale(cbind(x1, x2)))
@@ -240,7 +240,7 @@ estimate_curves <- function(x1, x2, scale, nalphas, intensity = NULL) {
 estimate_envelope <- function(triangles_list,
                               x,
                               y,
-                              scale,
+                              scale_pts,
                               nalphas,
                               mc_cores = 2) {
   for (i in seq_len(ncol(x))) {
@@ -263,7 +263,7 @@ estimate_envelope <- function(triangles_list,
           estimate_curves(
             x1 = x,
             x2 = y,
-            scale = scale,
+            scale_pts = scale_pts,
             nalphas = nalphas,
             intensity = triangles_list[[i]]$intensity
           )

@@ -4,15 +4,22 @@
 \alias{spatgeom}
 \title{Geometric Spatial Point Pattern Analysis}
 \usage{
-spatgeom(x, y, scale = FALSE, nalphas = 100, envelope = FALSE, mc_cores = 1)
+spatgeom(
+  x,
+  y,
+  scale_pts = FALSE,
+  nalphas = 100,
+  envelope = FALSE,
+  mc_cores = 1
+)
 }
 \arguments{
 \item{x}{numeric matrix or data.frame of covariables.}
 
 \item{y}{numeric vector of responses in a model.}
 
-\item{scale}{boolean to make the estimations with scaled variables. Default
-\code{FALSE}.}
+\item{scale_pts}{boolean to make the estimations with scaled variables.
+Default \code{FALSE}.}
 
 \item{nalphas}{a single number for the number of alphas generated between the
 minimum and maximum edge distance on the Delanauy triangulation.}
