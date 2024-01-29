@@ -158,72 +158,86 @@ spatgeom_x <- function(x, ...) {
 
 
 estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
-  if (scale_pts) {
-    pts <- sf::st_cast(
-      sf::st_sfc(
-        sf::st_multipoint(scales::rescale(cbind(x1, x2)))
-      ), "POINT"
-    )
+  # Scaling and point creation
+  coords <- if (scale_pts) {
+    scales::rescale(cbind(x1, x2))
   } else {
-    pts <- sf::st_cast(
-      sf::st_sfc(
-        sf::st_multipoint(cbind(x1, x2))
-      ), "POINT"
-    )
+    cbind(x1, x2)
   }
+  pts <- sf::st_multipoint(coords)
+  pts <- sf::st_sfc(pts)
+  pts <- sf::st_cast(pts, "POINT")
+
+  # Create bounding box
   bb <- sf::st_make_grid(pts, n = 1)
 
+  # Estimate intensity if not provided
   if (is.null(intensity)) {
     intensity <- length(pts) / sf::st_area(bb)
   }
 
+  # Triangulation
   v2 <- sf::st_triangulate(sf::st_geometrycollection(pts))
 
+  # Extract polygons and linestrings
   polygons <- sf::st_collection_extract(sf::st_sfc(v2))
   linestrings <- sf::st_cast(polygons, "LINESTRING")
   linestrings_splitted <- lwgeom::st_split(linestrings, pts)
-  max_length <-
-    sapply(linestrings_splitted, function(x) {
+
+  # Vectorized computation of max_length
+  max_length <- sapply(
+    linestrings_splitted,
+    function(x) {
       max(sf::st_length(sf::st_cast(sf::st_sfc(x))))
-    })
-
-  triangles <-
-    sf::st_sf(
-      list(
-        geometry = polygons,
-        segments = linestrings_splitted,
-        max_length = max_length,
-        alpha = max_length / 2
-      )
-    )
-  triangles <- triangles[order(triangles$alpha), ]
-
-  geom_corr <- NULL
-
-  out <- lapply(
-    X = seq_along(triangles$alpha),
-    FUN = function(k) {
-      alpha_shape <- triangles[1:k, ]
-
-      if (nrow(alpha_shape) > 0) {
-        poly_union <- sf::st_union(alpha_shape$geometry)
-
-        ## Geometric R2 index
-        geom_corr <-
-          1 - sf::st_area(poly_union) / sf::st_area(bb)
-      } else {
-        geom_corr <- 1
-      }
-      return(list(geom_corr = geom_corr))
     }
   )
 
-  geom_corr <- sapply(out, function(x) {
-    x$geom_corr
+  # Construction of the data frame
+  triangles <- data.frame(
+    geometry = polygons,
+    max_length = max_length,
+    alpha = max_length / 2
+  )
+
+  # Order by alpha
+  triangles <- triangles[order(triangles$alpha), ]
+
+  ## Create a sequence indices with step = number of triangles / nalphas
+  number_triangles <- nrow(triangles)
+  step_seq <- ifelse(nalphas < number_triangles,
+    ceiling(number_triangles / nalphas), 1
+  )
+  idx_triangles <- unique(c(seq(
+    from = 1,
+    to = number_triangles,
+    by = step_seq
+  ), number_triangles))
+
+  # Precompute all individual geometries outside the loop
+  individual_geometries <- lapply(seq_along(idx_triangles), function(k) {
+    if (k == 1) {
+      triangles[1, ]$geometry
+    } else {
+      sf::st_union(
+        triangles[idx_triangles[k - 1]:(idx_triangles[k] - 1), ]$geometry
+      )
+    }
   })
 
+  # Compute the cumulative union
+  cumulative_union <- Reduce(sf::st_union,
+    individual_geometries,
+    accumulate = TRUE
+  )
+
+  # Calculate areas and print them
+  areas <- sapply(cumulative_union, sf::st_area)
+  geom_corr <- 1 - areas / sf::st_area(bb)
+
+
+  # Construct the data frame with the results
   geom_indices <- data.frame(
-    alpha = triangles$alpha,
+    alpha = triangles$alpha[idx_triangles],
     geom_corr = geom_corr
   )
 
