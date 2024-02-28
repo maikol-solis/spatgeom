@@ -7,12 +7,12 @@
 #' @param y numeric vector of responses in a model.
 #' @param scale_pts boolean to make the estimations with scaled variables.
 #'   Default \code{FALSE}.
-#' @param nalphas a single number for the number of alphas generated between the
-#'   minimum and maximum edge distance on the Delanauy triangulation.
-#' @param envelope boolean to determine if the Monte-Carlo is estimated. Default
-#'   \code{FALSE}.
-#' @param mc_cores an integer to determine how many parallel process should be
-#'   run. Default \code{mc_core=1}.
+#' @param nalphas number of alphas generated for creating the geometric measure
+#'   of fit index. Default 100.
+#' @param envelope boolean to determine if the Monte-Carlo should be estimated.
+#'   Default \code{FALSE}.
+#' @param mc_cores integer with the number of parallel process to run (if
+#'   available). Default \code{1}.
 #'
 #'
 #' @return A list of class \code{spatgeom} with  the following elements:

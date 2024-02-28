@@ -21,14 +21,14 @@ spatgeom(
 \item{scale_pts}{boolean to make the estimations with scaled variables.
 Default \code{FALSE}.}
 
-\item{nalphas}{a single number for the number of alphas generated between the
-minimum and maximum edge distance on the Delanauy triangulation.}
+\item{nalphas}{number of alphas generated for creating the geometric measure
+of fit index. Default 100.}
 
-\item{envelope}{boolean to determine if the Monte-Carlo is estimated. Default
-\code{FALSE}.}
+\item{envelope}{boolean to determine if the Monte-Carlo should be estimated.
+Default \code{FALSE}.}
 
-\item{mc_cores}{an integer to determine how many parallel process should be
-run. Default \code{mc_core=1}.}
+\item{mc_cores}{integer with the number of parallel process to run (if
+available). Default \code{1}.}
 }
 \value{
 A list of class \code{spatgeom} with  the following elements:
