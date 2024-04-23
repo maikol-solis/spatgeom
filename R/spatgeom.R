@@ -272,7 +272,7 @@ estimate_curves <- function(x1, x2,
   )
 }
 
-estimate_envelope <- function(triangles_list, x, y,
+estimate_envelope <- function(spatgeom_obj, x, y,
                               scale_pts,
                               nalphas,
                               mc_cores = 2) {
@@ -289,7 +289,7 @@ estimate_envelope <- function(triangles_list, x, y,
       mc.cores = mc_cores,
       X = seq_len(40),
       FUN = function(k) {
-        n <- stats::rpois(1, lambda = triangles_list[[i]]$mean_n)
+        n <- stats::rpois(1, lambda = spatgeom_obj[[i]]$mean_n)
         x <- stats::runif(n, min = min(x[, i]), max = max(x[, i]))
         y <- stats::runif(n, min = min(y[, 1]), max = max(y[, 1]))
         enve <-
@@ -298,19 +298,19 @@ estimate_envelope <- function(triangles_list, x, y,
             x2 = y,
             scale_pts = scale_pts,
             nalphas = nalphas,
-            intensity = triangles_list[[i]]$intensity
+            intensity = spatgeom_obj[[i]]$intensity
           )
         enve_approx <-
           stats::approx(
             x = enve$geom_indices$alpha,
             y = enve$geom_indices$geom_survival,
-            xout = triangles_list[[i]]$geom_indices$alpha
+            xout = spatgeom_obj[[i]]$geom_indices$alpha
           )
         data.frame(enve_approx, nsim = k)
       }
     )
     envelope_data <- do.call("rbind", envelope_data)
-    triangles_list[[i]]$envelope_data <- envelope_data
+    spatgeom_obj[[i]]$envelope_data <- envelope_data
   }
-  return(triangles_list)
+  return(spatgeom_obj)
 }
