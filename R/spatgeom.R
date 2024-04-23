@@ -160,6 +160,7 @@ estimate_curves <- function(x1, x2,
                             nalphas,
                             intensity = NULL,
                             domain_type) {
+  # Step 0
   # Scaling and point creation
   coords <- if (scale_pts) {
     scales::rescale(cbind(x1, x2))
@@ -170,6 +171,7 @@ estimate_curves <- function(x1, x2,
   pts <- sf::st_sfc(pts)
   pts <- sf::st_cast(pts, "POINT")
 
+  # Step 1
   # Create bounding box
   if (domain_type == "convex-hull") {
     bb <- sf::st_convex_hull(pts)
@@ -179,16 +181,24 @@ estimate_curves <- function(x1, x2,
     stop("domain_type must be either 'convex-hull' or 'bounding-box'")
   }
 
+  # Step 2
   # Estimate intensity if not provided
   if (is.null(intensity)) {
     intensity <- length(pts) / sf::st_area(bb)
   }
 
+
+
+  # Step 3
+  # Alpha-shape construction
+
+
+
   # Triangulation
-  v2 <- sf::st_triangulate(sf::st_geometrycollection(pts))
+  delaunauy <- sf::st_triangulate(sf::st_geometrycollection(pts))
 
   # Extract polygons and linestrings
-  polygons <- sf::st_collection_extract(sf::st_sfc(v2))
+  polygons <- sf::st_collection_extract(sf::st_sfc(delaunauy))
   linestrings <- sf::st_cast(polygons, "LINESTRING")
   linestrings_splitted <- lwgeom::st_split(linestrings, pts)
 
@@ -237,6 +247,9 @@ estimate_curves <- function(x1, x2,
     individual_geometries,
     accumulate = TRUE
   )
+
+  # Step 4
+  # Calculate the geometric indices
 
   # Calculate areas and print them
   areas <- sapply(cumulative_union, sf::st_area)
