@@ -10,6 +10,7 @@ spatgeom(
   scale_pts = FALSE,
   nalphas = 100,
   envelope = FALSE,
+  domain_type = c("bounding-box", "convex-hull"),
   mc_cores = 1
 )
 }
@@ -26,6 +27,9 @@ of fit index. Default 100.}
 
 \item{envelope}{boolean to determine if the Monte-Carlo should be estimated.
 Default \code{FALSE}.}
+
+\item{domain_type}{character with the type of domain to use. It can be either
+"bounding-box" or "convex-hull". Default "bounding-box".}
 
 \item{mc_cores}{integer with the number of parallel process to run (if
 available). Default \code{1}.}

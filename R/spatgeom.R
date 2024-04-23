@@ -11,9 +11,10 @@
 #'   of fit index. Default 100.
 #' @param envelope boolean to determine if the Monte-Carlo should be estimated.
 #'   Default \code{FALSE}.
+#' @param domain_type character with the type of domain to use. It can be either
+#'   "bounding-box" or "convex-hull". Default "bounding-box".
 #' @param mc_cores integer with the number of parallel process to run (if
 #'   available). Default \code{1}.
-#'
 #'
 #' @return A list of class \code{spatgeom} with  the following elements:
 #'
@@ -78,6 +79,7 @@ spatgeom <- function(x, y,
                      scale_pts = FALSE,
                      nalphas = 100,
                      envelope = FALSE,
+                     domain_type = c("bounding-box", "convex-hull"),
                      mc_cores = 1) {
   if (missing(y)) {
     message("Running with only x")
@@ -100,6 +102,7 @@ spatgeom_xy <- function(
     mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
+  domain_type <- domain_type[1]
 
   ans <- list()
   ans[["call"]] <- match.call()
@@ -117,7 +120,8 @@ spatgeom_xy <- function(
         x1 = x[, i],
         x2 = y[, 1],
         scale_pts = scale_pts,
-        nalphas = nalphas
+        nalphas = nalphas,
+        domain_type = domain_type
       )
     }
   )
@@ -137,6 +141,7 @@ spatgeom_xy <- function(
       y = y,
       scale_pts = scale_pts,
       nalphas = nalphas,
+      domain_type = domain_type,
       mc_cores = mc_cores
     )
   }
@@ -146,17 +151,15 @@ spatgeom_xy <- function(
   return(ans)
 }
 
-
-
-
 spatgeom_x <- function(x, ...) {
 
 }
 
-
-
-
-estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
+estimate_curves <- function(x1, x2,
+                            scale_pts,
+                            nalphas,
+                            intensity = NULL,
+                            domain_type) {
   # Scaling and point creation
   coords <- if (scale_pts) {
     scales::rescale(cbind(x1, x2))
@@ -168,7 +171,13 @@ estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
   pts <- sf::st_cast(pts, "POINT")
 
   # Create bounding box
-  bb <- sf::st_make_grid(pts, n = 1)
+  if (domain_type == "convex-hull") {
+    bb <- sf::st_convex_hull(pts)
+  } else if (domain_type == "bounding-box") {
+    bb <- sf::st_make_grid(pts, n = 1)
+  } else {
+    stop("domain_type must be either 'convex-hull' or 'bounding-box'")
+  }
 
   # Estimate intensity if not provided
   if (is.null(intensity)) {
