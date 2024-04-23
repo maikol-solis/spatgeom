@@ -85,10 +85,12 @@ spatgeom <- function(x, y,
     message("Running with only x")
   } else {
     message("Running with x and y")
+    domain_type <- domain_type[1]
     spatgeom_xy(x, y,
       scale_pts = scale_pts,
       nalphas = nalphas,
       envelope = envelope,
+      domain_type = domain_type,
       mc_cores = mc_cores
     )
   }
@@ -99,6 +101,7 @@ spatgeom_xy <- function(
     scale_pts = FALSE,
     nalphas = 100,
     envelope = FALSE,
+    domain_type = c("bounding-box", "convex-hull"),
     mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
@@ -109,13 +112,12 @@ spatgeom_xy <- function(
   ans[["x"]] <- x
   ans[["y"]] <- y
 
-  message("Index estimation")
-
+  message("Estimating geometric survival of empty space.")
   out_list <- parallel::mclapply(
     mc.cores = mc_cores,
     X = seq_len(ncol(x)),
     FUN = function(i) {
-      message(paste0("Estimating R2 Geom for variable = ", i))
+      message(paste0("Variable = ", i))
       estimate_curves(
         x1 = x[, i],
         x2 = y[, 1],

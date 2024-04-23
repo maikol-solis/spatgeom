@@ -95,7 +95,7 @@ plot_curve <-
       }
 
 
-      plt <- plt + ggplot2::geom_step(ggplot2::aes(x = alpha, y = geom_corr),
+      plt <- plt + ggplot2::geom_step(ggplot2::aes(x = alpha, y = geom_survival),
         linewidth = 1
       )
 
