@@ -92,13 +92,12 @@ spatgeom <- function(x, y,
   }
 }
 
-
-
-spatgeom_xy <- function(x, y,
-                        scale_pts = FALSE,
-                        nalphas = 100,
-                        envelope = FALSE,
-                        mc_cores = 2) {
+spatgeom_xy <- function(
+    x, y,
+    scale_pts = FALSE,
+    nalphas = 100,
+    envelope = FALSE,
+    mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
 
@@ -251,9 +250,7 @@ estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
   )
 }
 
-estimate_envelope <- function(triangles_list,
-                              x,
-                              y,
+estimate_envelope <- function(triangles_list, x, y,
                               scale_pts,
                               nalphas,
                               mc_cores = 2) {
