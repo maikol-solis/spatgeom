@@ -277,6 +277,7 @@ estimate_curves <- function(x1, x2,
 estimate_envelope <- function(spatgeom_obj, x, y,
                               scale_pts,
                               nalphas,
+                              domain_type,
                               mc_cores = 2) {
   for (i in seq_len(ncol(x))) {
     message(paste0("Estimating envelope for variable = ", i))
@@ -300,7 +301,8 @@ estimate_envelope <- function(spatgeom_obj, x, y,
             x2 = y,
             scale_pts = scale_pts,
             nalphas = nalphas,
-            intensity = spatgeom_obj[[i]]$intensity
+            intensity = spatgeom_obj[[i]]$intensity,
+            domain_type = domain_type
           )
         enve_approx <-
           stats::approx(
