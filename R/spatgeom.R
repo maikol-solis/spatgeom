@@ -176,7 +176,7 @@ estimate_curves <- function(x1, x2,
   # Step 1
   # Create bounding box
   if (domain_type == "convex-hull") {
-    bb <- sf::st_convex_hull(pts)
+    bb <- sf::st_convex_hull(sf::st_union(pts))
   } else if (domain_type == "bounding-box") {
     bb <- sf::st_make_grid(pts, n = 1)
   } else {
