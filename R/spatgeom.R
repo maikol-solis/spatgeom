@@ -138,7 +138,7 @@ spatgeom_xy <- function(
 
   if (envelope == TRUE) {
     out_list <- estimate_envelope(
-      triangles_list = out_list,
+      spatgeom_obj = out_list,
       x = x,
       y = y,
       scale_pts = scale_pts,
