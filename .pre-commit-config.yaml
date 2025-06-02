@@ -2,13 +2,13 @@
 # R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.0.0
+    rev: v4.2.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: [] # optional: list of Conventional Commits types to allow e.g. [feat, fix, ci, chore, test]
   - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.3.9008
+    rev: v0.4.3.9009
     hooks:
       - id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style]
