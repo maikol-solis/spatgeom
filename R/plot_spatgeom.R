@@ -35,9 +35,7 @@ plot_alpha_shape <- function(x, alpha, font_size = 12) {
     s <- alpha[k]
     df_triangles <- subset(triangles, max_length < s)
 
-    df <- rbind(cbind(df_triangles,
-      variable = colnames(x$x)[k]
-    ), df)
+    df <- rbind(cbind(df_triangles, variable = colnames(x$x)[k]), df)
   }
 
   df <- sf::st_sf(df)

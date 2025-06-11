@@ -11,9 +11,10 @@
 #'   of fit index. Default 100.
 #' @param envelope boolean to determine if the Monte-Carlo should be estimated.
 #'   Default \code{FALSE}.
+#' @param domain_type character with the type of domain to use. It can be either
+#'   "bounding-box" or "convex-hull". Default "bounding-box".
 #' @param mc_cores integer with the number of parallel process to run (if
 #'   available). Default \code{1}.
-#'
 #'
 #' @return A list of class \code{spatgeom} with  the following elements:
 #'
@@ -35,11 +36,11 @@
 #' The \code{segments} column are the segments of each individual triangle and
 #' \code{max_length} is the maximum length of them.}
 #'
-#' \item{\strong{geom_indices}}{a data frame with columns \code{alpha}
-#'  and \code{geom_corr}. The \code{alpha} column is a numeric vector of size
+#' \item{\strong{geom_indices}}{a data frame with columns \code{alpha} and
+#'  \code{geom_survival}. The \code{alpha} column is a numeric vector of size
 #'  \code{nalphas} from the minimum to the maximum distance between points
-#'  estimated in the data. The \code{geom_corr} column is the value \code{1 -
-#'  (alpha shape Area)/(containing box Area).}}
+#'  estimated in the data. The \code{geom_survival} column is the value \code{1
+#'  - (alpha shape Area)/(containing box Area).}}
 #'
 #' \item{\strong{intensity}}{the intensity estimated for the corresponding
 #' column of \code{x} and \code{y}.}
@@ -79,6 +80,7 @@ spatgeom <- function(x, y,
                      nalphas = 100,
                      envelope = FALSE,
                      use_umap = FALSE,
+                     domain_type = c("bounding-box", "convex-hull"),
                      mc_cores = 1,
                      ...) {
   if (missing(y)) {
@@ -112,42 +114,45 @@ spatgeom <- function(x, y,
     )
   } else {
     message("Running with x and y")
+    domain_type <- domain_type[1]
     spatgeom_xy(x, y,
       scale_pts = scale_pts,
       nalphas = nalphas,
       envelope = envelope,
+      domain_type = domain_type,
       mc_cores = mc_cores
     )
   }
 }
 
-
-
-spatgeom_xy <- function(x, y,
-                        scale_pts = FALSE,
-                        nalphas = 100,
-                        envelope = FALSE,
-                        mc_cores = 2) {
+spatgeom_xy <- function(
+    x, y,
+    scale_pts = FALSE,
+    nalphas = 100,
+    envelope = FALSE,
+    domain_type = c("bounding-box", "convex-hull"),
+    mc_cores = 2) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
+  domain_type <- domain_type[1]
 
   ans <- list()
   ans[["call"]] <- match.call()
   ans[["x"]] <- x
   ans[["y"]] <- y
 
-  message("Index estimation")
-
+  message("Estimating geometric survival of empty space.")
   out_list <- parallel::mclapply(
     mc.cores = mc_cores,
     X = seq_len(ncol(x)),
     FUN = function(i) {
-      message(paste0("Estimating R2 Geom for variable = ", i))
+      message(paste0("Variable = ", i))
       estimate_curves(
         x1 = x[, i],
         x2 = y[, 1],
         scale_pts = scale_pts,
-        nalphas = nalphas
+        nalphas = nalphas,
+        domain_type = domain_type
       )
     }
   )
@@ -162,11 +167,12 @@ spatgeom_xy <- function(x, y,
 
   if (envelope == TRUE) {
     out_list <- estimate_envelope(
-      triangles_list = out_list,
+      spatgeom_obj = out_list,
       x = x,
       y = y,
       scale_pts = scale_pts,
       nalphas = nalphas,
+      domain_type = domain_type,
       mc_cores = mc_cores
     )
   }
@@ -176,17 +182,16 @@ spatgeom_xy <- function(x, y,
   return(ans)
 }
 
-
-
-
 spatgeom_x <- function(x, ...) {
 
 }
 
-
-
-
-estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
+estimate_curves <- function(x1, x2,
+                            scale_pts,
+                            nalphas,
+                            intensity = NULL,
+                            domain_type) {
+  # Step 0
   # Scaling and point creation
   coords <- if (scale_pts) {
     scales::rescale(cbind(x1, x2))
@@ -197,19 +202,34 @@ estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
   pts <- sf::st_sfc(pts)
   pts <- sf::st_cast(pts, "POINT")
 
+  # Step 1
   # Create bounding box
-  bb <- sf::st_make_grid(pts, n = 1)
+  if (domain_type == "convex-hull") {
+    bb <- sf::st_convex_hull(sf::st_union(pts))
+  } else if (domain_type == "bounding-box") {
+    bb <- sf::st_make_grid(pts, n = 1)
+  } else {
+    stop("domain_type must be either 'convex-hull' or 'bounding-box'")
+  }
 
+  # Step 2
   # Estimate intensity if not provided
   if (is.null(intensity)) {
     intensity <- length(pts) / sf::st_area(bb)
   }
 
+
+
+  # Step 3
+  # Alpha-shape construction
+
+
+
   # Triangulation
-  v2 <- sf::st_triangulate(sf::st_geometrycollection(pts))
+  delaunauy <- sf::st_triangulate(sf::st_geometrycollection(pts))
 
   # Extract polygons and linestrings
-  polygons <- sf::st_collection_extract(sf::st_sfc(v2))
+  polygons <- sf::st_collection_extract(sf::st_sfc(delaunauy))
   linestrings <- sf::st_cast(polygons, "LINESTRING")
   linestrings_splitted <- lwgeom::st_split(linestrings, pts)
 
@@ -259,15 +279,18 @@ estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
     accumulate = TRUE
   )
 
+  # Step 4
+  # Calculate the geometric indices
+
   # Calculate areas and print them
   areas <- sapply(cumulative_union, sf::st_area)
-  geom_corr <- 1 - areas / sf::st_area(bb)
+  geom_survival <- 1 - areas / sf::st_area(bb)
 
 
   # Construct the data frame with the results
   geom_indices <- data.frame(
     alpha = triangles$alpha[idx_triangles],
-    geom_corr = geom_corr
+    geom_survival = geom_survival
   )
 
   return(
@@ -280,11 +303,10 @@ estimate_curves <- function(x1, x2, scale_pts, nalphas, intensity = NULL) {
   )
 }
 
-estimate_envelope <- function(triangles_list,
-                              x,
-                              y,
+estimate_envelope <- function(spatgeom_obj, x, y,
                               scale_pts,
                               nalphas,
+                              domain_type,
                               mc_cores = 2) {
   for (i in seq_len(ncol(x))) {
     message(paste0("Estimating envelope for variable = ", i))
@@ -299,7 +321,7 @@ estimate_envelope <- function(triangles_list,
       mc.cores = mc_cores,
       X = seq_len(40),
       FUN = function(k) {
-        n <- stats::rpois(1, lambda = triangles_list[[i]]$mean_n)
+        n <- stats::rpois(1, lambda = spatgeom_obj[[i]]$mean_n)
         x <- stats::runif(n, min = min(x[, i]), max = max(x[, i]))
         y <- stats::runif(n, min = min(y[, 1]), max = max(y[, 1]))
         enve <-
@@ -308,19 +330,20 @@ estimate_envelope <- function(triangles_list,
             x2 = y,
             scale_pts = scale_pts,
             nalphas = nalphas,
-            intensity = triangles_list[[i]]$intensity
+            intensity = spatgeom_obj[[i]]$intensity,
+            domain_type = domain_type
           )
         enve_approx <-
           stats::approx(
             x = enve$geom_indices$alpha,
-            y = enve$geom_indices$geom_corr,
-            xout = triangles_list[[i]]$geom_indices$alpha
+            y = enve$geom_indices$geom_survival,
+            xout = spatgeom_obj[[i]]$geom_indices$alpha
           )
         data.frame(enve_approx, nsim = k)
       }
     )
     envelope_data <- do.call("rbind", envelope_data)
-    triangles_list[[i]]$envelope_data <- envelope_data
+    spatgeom_obj[[i]]$envelope_data <- envelope_data
   }
-  return(triangles_list)
+  return(spatgeom_obj)
 }
