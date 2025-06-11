@@ -85,7 +85,7 @@ spatgeom <- function(x, y,
     message("Running with only x.")
 
     if (use_umap == TRUE && ncol(x) > 2) {
-      if (scale == TRUE) {
+      if (scale_pts == TRUE) {
         x <- as.matrix(scale(x))
       }
       dt <- umap::umap(x, ...)
@@ -105,7 +105,7 @@ spatgeom <- function(x, y,
     spatgeom_xy(
       x = xr,
       y = yr,
-      scale = scale,
+      scale_pts = scale_pts,
       nalphas = nalphas,
       envelope = envelope,
       mc_cores = mc_cores
