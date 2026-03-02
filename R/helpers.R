@@ -65,7 +65,6 @@ num_deriv <- function(y, x) {
 }
 
 
-
 central_difference_derivate <- function(x, y) {
   # estimate the central difference of the derivative
   # of y with respect to x

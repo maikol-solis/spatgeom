@@ -97,12 +97,13 @@ spatgeom <- function(x, y,
 }
 
 spatgeom_xy <- function(
-    x, y,
-    scale_pts = FALSE,
-    nalphas = 100,
-    envelope = FALSE,
-    domain_type = c("bounding-box", "convex-hull"),
-    mc_cores = 2) {
+  x, y,
+  scale_pts = FALSE,
+  nalphas = 100,
+  envelope = FALSE,
+  domain_type = c("bounding-box", "convex-hull"),
+  mc_cores = 2
+) {
   x <- as.data.frame(x)
   y <- as.data.frame(y)
   domain_type <- domain_type[1]
@@ -153,9 +154,7 @@ spatgeom_xy <- function(
   return(ans)
 }
 
-spatgeom_x <- function(x, ...) {
-
-}
+spatgeom_x <- function(x, ...) {}
 
 estimate_curves <- function(x1, x2,
                             scale_pts,
@@ -190,10 +189,8 @@ estimate_curves <- function(x1, x2,
   }
 
 
-
   # Step 3
   # Alpha-shape construction
-
 
 
   # Triangulation

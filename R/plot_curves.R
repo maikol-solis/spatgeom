@@ -114,7 +114,6 @@ plot_curve <-
       }
 
 
-
       plt <- plt +
         ggplot2::scale_y_continuous(name = expression(f(alpha))) +
         ggplot2::scale_x_continuous(
