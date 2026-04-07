@@ -160,6 +160,16 @@ spatgeom <- function(
   reduce_embedding <- NULL
 
   if (ncol(x) > 2 && reduce != "none") {
+    reserved_reduce_args <- c("x", "method", "n_components")
+    conflicting_reduce_args <- intersect(names(reduce_args), reserved_reduce_args)
+    if (length(conflicting_reduce_args) > 0) {
+      stop(
+        "'reduce_args' cannot override reserved arguments: ",
+        paste(conflicting_reduce_args, collapse = ", "),
+        "."
+      )
+    }
+
     message(
       "Reducing x from ", ncol(x),
       " to 2 columns via method = '", reduce, "'."
@@ -168,6 +178,14 @@ spatgeom <- function(
       reduce_dim,
       c(list(x = as.matrix(x), method = reduce, n_components = 2L), reduce_args)
     )
+
+    if (NCOL(reduce_embedding) != 2) {
+      stop(
+        "'reduce_dim' must return exactly 2 columns, but returned ",
+        NCOL(reduce_embedding), "."
+      )
+    }
+
     x <- as.data.frame(reduce_embedding)
   }
 
