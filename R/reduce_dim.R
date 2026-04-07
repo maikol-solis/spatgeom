@@ -32,7 +32,7 @@
 #'
 #' # PCA — no extra packages needed
 #' emb <- reduce_dim(xy[, -1], method = "pca")
-#' dim(emb)  # 50 x 2
+#' dim(emb) # 50 x 2
 #'
 #' \donttest{
 #' # UMAP — requires uwot
@@ -67,8 +67,7 @@ reduce_dim <- function(x, method = c("pca", "umap", "tsne"), n_components = 2L, 
     )
   }
 
-  result <- switch(
-    method,
+  result <- switch(method,
     pca = {
       fit <- stats::prcomp(x, ...)
       fit$x[, seq_len(n_components), drop = FALSE]
