@@ -15,16 +15,16 @@
 #' @param ... additional arguments forwarded verbatim to
 #'   \code{\link{spatgeom}} for every group. This includes \code{y},
 #'   \code{nalphas}, \code{domain_type}, \code{envelope},
-#'   \code{hypothesis_testing}, \code{method}, \code{use_umap},
-#'   \code{umap_args}, \code{mc_cores}, etc. The subset of \code{x} rows
+#'   \code{hypothesis_testing}, \code{method}, \code{reduce},
+#'   \code{reduce_args}, \code{mc_cores}, etc. The subset of \code{x} rows
 #'   belonging to each group is passed automatically; do \emph{not} pass
 #'   \code{x} again inside \code{...}.
 #'
 #' @details
 #' When \code{y} is supplied via \code{...}, the corresponding rows of \code{y}
 #' are subsetted to match each group. When \code{y} is absent, each group's
-#' subset of \code{x} is treated as a 2-D point cloud (or projected with UMAP
-#' if \code{use_umap = TRUE}).
+#' subset of \code{x} is treated as a 2-D point cloud (or reduced according to
+#' \code{reduce} with options supplied via \code{reduce_args}).
 #'
 #' Groups are processed in the order returned by \code{unique(by)}, which
 #' preserves the order of first appearance in \code{by}.
