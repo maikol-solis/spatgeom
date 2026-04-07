@@ -8,7 +8,9 @@ reduce_dim(x, method = c("pca", "umap", "tsne"), n_components = 2L, ...)
 }
 \arguments{
 \item{x}{a numeric matrix or data frame with \eqn{n} rows and \eqn{p}
-columns (\eqn{p \ge d}).}
+columns. For \code{method = "pca"}, \eqn{p \ge d} is required; for
+\code{"umap"} and \code{"tsne"}, \code{n_components} may exceed
+\code{ncol(x)}.}
 
 \item{method}{character; the reduction method. One of:
 \describe{

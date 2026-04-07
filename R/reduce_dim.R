@@ -7,7 +7,9 @@
 #'   feature matrix has more than 2 columns.
 #'
 #' @param x a numeric matrix or data frame with \eqn{n} rows and \eqn{p}
-#'   columns (\eqn{p \ge d}).
+#'   columns. For \code{method = "pca"}, \eqn{p \ge d} is required; for
+#'   \code{"umap"} and \code{"tsne"}, \code{n_components} may exceed
+#'   \code{ncol(x)}.
 #' @param method character; the reduction method. One of:
 #'   \describe{
 #'     \item{\code{"pca"}}{Principal Component Analysis via
