@@ -60,11 +60,18 @@ reduce_dim <- function(x, method = c("pca", "umap", "tsne"), n_components = 2L, 
   if (nrow(x) < 2) {
     stop("'x' must have at least 2 rows.")
   }
-  if (ncol(x) < n_components) {
-    stop(
-      "'x' has ", ncol(x), " columns but 'n_components' = ", n_components,
-      ". Provide a matrix with at least ", n_components, " columns."
-    )
+  if (n_components < 1L) {
+    stop("'n_components' must be at least 1.")
+  }
+  if (method == "pca") {
+    max_components <- min(ncol(x), nrow(x) - 1L)
+    if (n_components > max_components) {
+      stop(
+        "'n_components' = ", n_components,
+        " exceeds the maximum supported for method = 'pca' with this input (",
+        max_components, ")."
+      )
+    }
   }
 
   result <- switch(method,
