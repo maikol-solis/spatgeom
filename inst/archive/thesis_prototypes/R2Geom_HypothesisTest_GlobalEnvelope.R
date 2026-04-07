@@ -56,55 +56,55 @@ CSR_test <- function(X, Y, sign_level = 0.05, name_ex = "ex1", r = 0.5) {
     envelope = TRUE,
     sign_level = sign_level
   )
-  #x: the alpha of the Alpha Shape.
-  #alphastats is part of the Geometric Spatial Point Pattern Analysis module.
+  # x: the alpha of the Alpha Shape.
+  # alphastats is part of the Geometric Spatial Point Pattern Analysis module.
   methods <- c("MAD", "DCFL")
   for (method in methods) {
     for (i in 1:ncol(X)) {
       f_simul <- estimation$results[[i]]$envelope_data
-      #f_simul is the simulated maps for a CSR process with the same intensity
-      #and observation window that the analyzed process.
+      # f_simul is the simulated maps for a CSR process with the same intensity
+      # and observation window that the analyzed process.
 
       f_obs <- estimation$results[[i]]$data_frame_triangles[, 2]
-      #f_obs: the observed map, f(alpha), of the Geometric Goodness of
-      #fit measure.
+      # f_obs: the observed map, f(alpha), of the Geometric Goodness of
+      # fit measure.
 
-      f_obs_with_num = data.frame(
+      f_obs_with_num <- data.frame(
         "x" = estimation$results[[i]]$data_frame_triangles[, 1],
         "y" = f_obs,
         "nsim" = 0
       )
-      #f_obs_with_num: f_obs with the corresponding number of simulation.
+      # f_obs_with_num: f_obs with the corresponding number of simulation.
 
       f_simul_and_obs <- rbind(f_simul, f_obs_with_num)
 
       f_mean <- f_simul_and_obs %>%
         group_by(x) %>%
         summarise(mean = mean(y, na.rm = TRUE))
-      #fmean: map of the mean of the CSR simulated patterns.
+      # fmean: map of the mean of the CSR simulated patterns.
 
-      f_dataframe = cbind(f_obs, f_mean)
-      intensity = estimation$results[[i]]$intensity
-      #intensity: intensity of the point process.
+      f_dataframe <- cbind(f_obs, f_mean)
+      intensity <- estimation$results[[i]]$intensity
+      # intensity: intensity of the point process.
 
-      f_dataframe$theor = exp(-intensity * pi * (f_dataframe$x * r)^2)
-      #f_dataframe$theor: the theoretical map of a CSR pattern.
+      f_dataframe$theor <- exp(-intensity * pi * (f_dataframe$x * r)^2)
+      # f_dataframe$theor: the theoretical map of a CSR pattern.
 
-      #t_simulated_mean: Value of the Test Statistic for each simulation,
-      #using f_mean.
-      #t_max_mean: maximum value of t_simul_mean.
-      #t_simulated_theo: Value of the Test Statistic for each simulation,
-      #using f_dataframe$theor.
-      #t_max_theo: maximum value of t_simul_theo.
+      # t_simulated_mean: Value of the Test Statistic for each simulation,
+      # using f_mean.
+      # t_max_mean: maximum value of t_simul_mean.
+      # t_simulated_theo: Value of the Test Statistic for each simulation,
+      # using f_dataframe$theor.
+      # t_max_theo: maximum value of t_simul_theo.
 
       if (method == "DCFL") {
-        delta_alpha = f_mean$x[2] - f_mean$x[1]
+        delta_alpha <- f_mean$x[2] - f_mean$x[1]
         f_dataframe$sq_diff_mean <- (f_dataframe$f_obs - f_dataframe$mean)^2 *
           delta_alpha
         f_dataframe$sq_diff_theo <- (f_dataframe$f_obs - f_dataframe$theor)^2 *
           delta_alpha
-        t_obs_mean = sum(f_dataframe$sq_diff_mean)
-        t_obs_theo = sum(f_dataframe$sq_diff_theo)
+        t_obs_mean <- sum(f_dataframe$sq_diff_mean)
+        t_obs_theo <- sum(f_dataframe$sq_diff_theo)
         times <- 1 / sign_level - 1
         f_simul$f_mean_rep <- rep(f_mean$mean, times = times)
         f_simul$f_theor_rep <- rep(f_dataframe$theor, times = times)
@@ -117,13 +117,13 @@ CSR_test <- function(X, Y, sign_level = 0.05, name_ex = "ex1", r = 0.5) {
         t_simul_theo <- f_simul %>%
           group_by(nsim) %>%
           summarise(maxim = sum(sq_diff_theo, na.rm = TRUE))
-        t_max_mean = max(t_simul_mean$maxim)
-        t_max_theo = max(t_simul_theo$maxim)
+        t_max_mean <- max(t_simul_mean$maxim)
+        t_max_theo <- max(t_simul_theo$maxim)
       } else {
         f_dataframe$abs_diff_mean <- abs(f_dataframe$f_obs - f_dataframe$mean)
         f_dataframe$abs_diff_theo <- abs(f_dataframe$f_obs - f_dataframe$theor)
-        t_obs_mean = max(f_dataframe$abs_diff_mean)
-        t_obs_theo = max(f_dataframe$abs_diff_theo)
+        t_obs_mean <- max(f_dataframe$abs_diff_mean)
+        t_obs_theo <- max(f_dataframe$abs_diff_theo)
         times <- 1 / sign_level - 1
         f_simul$f_mean_rep <- rep(f_mean$mean, times = times)
         f_simul$f_theor_rep <- rep(f_dataframe$theor, times = times)
@@ -135,17 +135,17 @@ CSR_test <- function(X, Y, sign_level = 0.05, name_ex = "ex1", r = 0.5) {
         t_simul_theo <- f_simul %>%
           group_by(nsim) %>%
           summarise(maxim = max(abs_diff_theo, na.rm = TRUE))
-        t_max_mean = max(t_simul_mean$maxim)
-        t_max_theo = max(t_simul_theo$maxim)
+        t_max_mean <- max(t_simul_mean$maxim)
+        t_max_theo <- max(t_simul_theo$maxim)
       }
-      t_simul_ord_mean = sort(t_simul_mean$maxim, decreasing = TRUE)
+      t_simul_ord_mean <- sort(t_simul_mean$maxim, decreasing = TRUE)
       m <- length(t_simul_ord_mean)
       k <- if (t_obs_mean < min(t_simul_ord_mean)) {
         m + 1
       } else {
         which(t_obs_mean > t_simul_ord_mean)[1]
       }
-      t_simul_ord_theo = sort(t_simul_theo$maxim, decreasing = TRUE)
+      t_simul_ord_theo <- sort(t_simul_theo$maxim, decreasing = TRUE)
       m2 <- length(t_simul_ord_theo)
       k2 <- if (t_obs_theo < min(t_simul_ord_theo)) {
         m2 + 1
@@ -197,7 +197,7 @@ CSR_test <- function(X, Y, sign_level = 0.05, name_ex = "ex1", r = 0.5) {
       f_dataframe$lower_mean <- f_dataframe$mean - t_max_mean
       f_dataframe$upper_theo <- f_dataframe$theor + t_max_theo
       f_dataframe$lower_theo <- f_dataframe$theor - t_max_theo
-      f_dataframe$variable = colnames(X[i])
+      f_dataframe$variable <- colnames(X[i])
       if (method == "MAD") {
         if (i == 1) {
           f_df_MAD <- f_dataframe

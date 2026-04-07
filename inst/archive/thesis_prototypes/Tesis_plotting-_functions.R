@@ -1,6 +1,6 @@
-#Functions for graphs.
+# Functions for graphs.
 
-#Example
+# Example
 n <- 100
 a <- -1
 b <- 1
@@ -31,7 +31,7 @@ variable_labeller <- function(variable, value) {
 
 
 plot_clouds <- function(X, Y, namefile.png) {
-  #Plots the data point clouds.
+  # Plots the data point clouds.
   df <- cbind(X, Y)
   df <- tidyr::pivot_longer(
     df,
@@ -42,7 +42,7 @@ plot_clouds <- function(X, Y, namefile.png) {
   g <- ggplot(df, aes(points, Y)) +
     ggplot2::geom_point(size = 0.75) +
     stat_poly_line(se = FALSE) +
-    #stat_poly_eq(label.y = 1.1) +
+    # stat_poly_eq(label.y = 1.1) +
     cowplot::theme_cowplot(font_size = 12) +
     cowplot::background_grid(minor = "y") +
     cowplot::panel_border() +
@@ -63,7 +63,7 @@ plot_clouds <- function(X, Y, namefile.png) {
 }
 
 plot_clouds_R <- function(X, Y, namefile.png) {
-  #Plots the data point clouds with the determination coeff. R^2.
+  # Plots the data point clouds with the determination coeff. R^2.
   df <- cbind(X, Y)
   df <- tidyr::pivot_longer(
     df,
@@ -95,7 +95,7 @@ plot_clouds_R <- function(X, Y, namefile.png) {
 }
 
 plot_clouds_cuad <- function(X, Y, namefile.png) {
-  #Plots the data point clouds with aspect ratio = 1.
+  # Plots the data point clouds with aspect ratio = 1.
   df <- cbind(X, Y)
   df <- tidyr::pivot_longer(
     df,
@@ -106,14 +106,14 @@ plot_clouds_cuad <- function(X, Y, namefile.png) {
   g <- ggplot(df, aes(points, Y)) +
     ggplot2::geom_point(size = 0.75) +
     stat_poly_line(se = FALSE) +
-    #stat_poly_eq(label.y = 1.1) +
+    # stat_poly_eq(label.y = 1.1) +
     cowplot::theme_cowplot(font_size = 12) +
     cowplot::background_grid(minor = "y") +
     cowplot::panel_border() +
     ggtitle("") +
     xlab("X") +
     ylab("Y") +
-    #coord_fixed( ratio=1)
+    # coord_fixed( ratio=1)
     facet_wrap(. ~ variable, scales = "free_x", labeller = variable_labeller) +
     theme(aspect.ratio = 1)
 
@@ -144,7 +144,7 @@ variable_labeller <- function(variable, value) {
 
 
 plot_envelope_mean <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the f_mean (Mean of the CSR simulated patterns)
+  # Plots the CSR envelope using the f_mean (Mean of the CSR simulated patterns)
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = mean), colour = "blue") +
@@ -171,7 +171,7 @@ plot_envelope_mean <- function(df, font_size = 12, name_plot) {
 
 
 plot_envelope_theo <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the theoretical map of a CSR process.
+  # Plots the CSR envelope using the theoretical map of a CSR process.
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = upper_theo), colour = "red", linetype = "dashed") +
@@ -197,7 +197,7 @@ plot_envelope_theo <- function(df, font_size = 12, name_plot) {
 }
 
 plot_envelope_theo_2 <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the theoretical map of a CSR process.
+  # Plots the CSR envelope using the theoretical map of a CSR process.
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = upper_theo), colour = "red", linetype = "dashed") +
@@ -224,7 +224,7 @@ plot_envelope_theo_2 <- function(df, font_size = 12, name_plot) {
 }
 
 plot_envelope_mean_2 <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the f_mean (Mean of the CSR simulated patterns)
+  # Plots the CSR envelope using the f_mean (Mean of the CSR simulated patterns)
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = mean), colour = "blue") +
@@ -252,7 +252,7 @@ plot_envelope_mean_2 <- function(df, font_size = 12, name_plot) {
 
 
 plot_envelope_mean_real <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the f_mean (Mean of the CSR simulated patterns)
+  # Plots the CSR envelope using the f_mean (Mean of the CSR simulated patterns)
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = mean), colour = "blue") +
@@ -279,7 +279,7 @@ plot_envelope_mean_real <- function(df, font_size = 12, name_plot) {
 
 
 plot_envelope_theo_real <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the theoretical map of a CSR process.
+  # Plots the CSR envelope using the theoretical map of a CSR process.
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = upper_theo), colour = "red", linetype = "dashed") +
@@ -305,7 +305,7 @@ plot_envelope_theo_real <- function(df, font_size = 12, name_plot) {
 }
 
 plot_envelope_theo_real_2 <- function(df, font_size = 12, name_plot) {
-  #Plots the CSR envelope using the theoretical map of a CSR process.
+  # Plots the CSR envelope using the theoretical map of a CSR process.
   g <- ggplot(df, aes(x)) +
     geom_line(aes(y = f_obs), colour = "black") +
     geom_line(aes(y = upper_theo), colour = "red", linetype = "dashed") +
@@ -367,7 +367,7 @@ plot_clouds_real <- function(X, Y, namefile.png, y_title) {
   g <- ggplot(df, aes(points, Y)) +
     ggplot2::geom_point(size = 0.75) +
     stat_poly_line(se = FALSE) +
-    #stat_poly_eq() +
+    # stat_poly_eq() +
     cowplot::theme_cowplot(font_size = 12) +
     cowplot::background_grid(minor = "y") +
     cowplot::panel_border() +
@@ -397,7 +397,7 @@ plot_clouds_real_2 <- function(X, Y, namefile.png, y_title) {
   g <- ggplot(df, aes(points, Y)) +
     ggplot2::geom_point(size = 0.75) +
     stat_poly_line(se = FALSE) +
-    #stat_poly_eq() +
+    # stat_poly_eq() +
     cowplot::theme_cowplot(font_size = 12) +
     cowplot::background_grid(minor = "y") +
     cowplot::panel_border() +
@@ -460,8 +460,8 @@ plot_clouds2 <- function(X, Y, namefile.png) {
   )
   g <- ggplot(df, aes(points, Y)) +
     ggplot2::geom_point(size = 0.75) +
-    #stat_poly_line() +
-    #stat_poly_eq() +
+    # stat_poly_line() +
+    # stat_poly_eq() +
     cowplot::theme_cowplot(font_size = 12) +
     cowplot::background_grid(minor = "y") +
     cowplot::panel_border() +

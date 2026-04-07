@@ -6,7 +6,7 @@
 ^NEWS\.md$
 ^README.*
 ^\.Rproj\.user$
+^\.claude$
 ^\.pre-commit-config\.yaml$
 ^\.travis\.yml$
 ^cran-comments\.md$
-^\.claude$

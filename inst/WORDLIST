@@ -16,6 +16,7 @@ cowplot
 cr
 cran
 cre
+Cressie
 CSR
 csr
 ctb
@@ -23,6 +24,7 @@ dcf
 DCLF
 Delanauy
 df
+Diggle
 doi
 donut
 dplyr
@@ -37,6 +39,7 @@ https
 HypothesisTest
 knitr
 LazyData
+Loosmore
 lwgeom
 Maikol
 maikol
@@ -44,6 +47,7 @@ md
 MERCHANTABILITY
 MV
 nalphas
+Neighbour
 NONINFRINGEMENT
 Pasquier
 pasquier
@@ -56,15 +60,19 @@ rmarkdown
 Roxygen
 roxygenize
 RoxygenNote
+Rtsne
 sfc
 SHA
 solis
 Solís
 spatgeom
 sublicense
+summarising
 Tesis
 testthat
 ucr
+UMAP
 Untracked
+uwot
 WORDLIST
 yaml
