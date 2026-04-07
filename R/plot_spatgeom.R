@@ -19,7 +19,6 @@
 #' plot_alpha_shape(estimation, alpha = c(0.9, 1.2))
 #' @export
 
-
 plot_alpha_shape <- function(x, alpha, font_size = 12) {
   if (length(alpha) == 1) {
     alpha <- rep(alpha, ncol(x$x))
