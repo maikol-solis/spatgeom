@@ -36,4 +36,6 @@ Depends: R (>= 3.6.0)
 Suggests:
     rmarkdown,
     knitr,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    uwot,
+    Rtsne

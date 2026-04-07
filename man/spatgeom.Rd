@@ -15,13 +15,20 @@ spatgeom(
   significance_level = 0.05,
   mc_cores = 1,
   r = 0.5,
-  method = c("MAD", "DCLF")
+  method = c("MAD", "DCLF"),
+  reduce = c("none", "pca", "umap", "tsne"),
+  reduce_args = list()
 )
 }
 \arguments{
-\item{x}{numeric matrix or data.frame of covariables.}
+\item{x}{numeric matrix or data.frame. Either a matrix of covariables
+(paired with \code{y}), or a single \eqn{n \times p} matrix when \code{y}
+is omitted. In the latter case \code{x} must have at least 2 columns: if
+exactly 2, they are used directly as 2D coordinates; if more than 2, set
+\code{use_umap = TRUE} to project to 2D first.}
 
-\item{y}{numeric vector of responses in a model.}
+\item{y}{numeric vector of responses. Optional: when omitted, \code{x} is
+treated as a single point cloud (see \code{use_umap}).}
 
 \item{scale_pts}{boolean to make the estimations with scaled variables.
 Default \code{FALSE}.}
@@ -54,6 +61,19 @@ available). Default \code{1}.}
 or \code{"DCLF"} (Diggle-Cressie-Loosmore-Ford). Specifies the global
 envelope test statistic passed to \code{\link{csr_test}}. Default
 \code{"MAD"}.}
+
+\item{reduce}{character; dimensionality reduction method to apply when
+\code{x} has more than 2 columns. One of \code{"none"} (default, keeps
+all columns and pairs each with \code{y} as separate variables),
+\code{"pca"} (Principal Component Analysis, no extra package required),
+\code{"umap"} (requires \pkg{uwot}), or \code{"tsne"} (requires
+\pkg{Rtsne}). When \code{reduce != "none"}, \code{x} is projected to 2
+dimensions via \code{\link{reduce_dim}} before the analysis.}
+
+\item{reduce_args}{a named list of additional arguments forwarded to
+\code{\link{reduce_dim}} (and in turn to the underlying method). For
+example, \code{list(n_neighbors = 30)} when \code{reduce = "umap"}.
+Default \code{list()}.}
 }
 \value{
 A list of class \code{spatgeom} with  the following elements:
@@ -99,6 +119,11 @@ distribution with parameter \code{mean_n}.}
 \code{\link{csr_test}} with elements \code{hypothesis_testing_df} (a data
 frame of test statistics and confidence bands for all variables) and
 \code{details} (per-variable summary tables of the test results).}
+
+\item{\strong{reduce_embedding}}{Only present when \code{reduce != "none"}
+and \code{x} had more than 2 columns. The \eqn{n \times 2} numeric matrix
+produced by \code{\link{reduce_dim}}, whose columns were used as the 2D
+point cloud.}
 }
 }
 \description{
@@ -129,6 +154,16 @@ plot_curve(est_ht, type = "curve")
 
 # Inspect the per-variable test results:
 est_ht$hypothesis_testing_results$details
+
+# Wide matrix: reduce to 2D with PCA before running the analysis:
+est_pca <- spatgeom(y = xy[, 1], x = xy[, -1], reduce = "pca")
+plot_curve(est_pca, type = "curve")
+
+# Wide matrix: reduce with UMAP (requires the 'uwot' package):
+if (requireNamespace("uwot", quietly = TRUE)) {
+  est_umap <- spatgeom(y = xy[, 1], x = xy[, -1], reduce = "umap")
+  plot_curve(est_umap, type = "curve")
+}
 }
 }
 \references{

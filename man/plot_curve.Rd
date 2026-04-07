@@ -2,13 +2,18 @@
 % Please edit documentation in R/plot_curves.R
 \name{plot_curve}
 \alias{plot_curve}
+\alias{plot_curve.spatgeom}
 \title{plot spatgeom objects with hypothesis testing results and confidence
 intervals}
 \usage{
-plot_curve(x, type = "curve", font_size = 12)
+plot_curve(x, ...)
+
+\method{plot_curve}{spatgeom}(x, type = "curve", font_size = 12, ...)
 }
 \arguments{
 \item{x}{an object of class \code{spatgeom}.}
+
+\item{...}{further arguments passed to the appropriate method.}
 
 \item{type}{a string: either \code{"curve"} (the default) or \code{"deriv"}.
 The option \code{"curve"} plots the survival curve (with envelopes and,
@@ -18,7 +23,8 @@ numerical derivative.}
 \item{font_size}{an integer controlling the font size in the plot.}
 }
 \value{
-a \code{ggplot} object.
+a \code{ggplot} object (or a \code{cowplot} grid for
+\code{spatgeom_group} objects).
 }
 \description{
 Plot method for objects of class \code{spatgeom}. This method plots the
