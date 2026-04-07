@@ -1,14 +1,13 @@
 #' plot spatgeom objects with hypothesis testing results and confidence
 #' intervals
 #'
-#' Plot method for objects of class \code{spatgeom}. This method plots the
-#' geometric survival (i.e. empty–space) curve against \eqn{\alpha} along with:
-#'   - the envelope from the Monte Carlo simulation (if computed),
-#'   - the theoretical CSR curve, and
-#'   - if hypothesis testing was performed, a ribbon representing the confidence
-#'     interval (and a mean curve) from the test.
+#' S3 generic for plotting spatial geometry analysis results. Dispatches to
+#' \code{\link{plot_curve.spatgeom}} for \code{spatgeom} objects (producing a
+#' \code{ggplot} of survival curves or their derivatives), and to
+#' \code{\link{plot_curve.spatgeom_group}} for \code{spatgeom_group} objects
+#' (producing a side-by-side \code{cowplot} grid, one panel per group).
 #'
-#' @param x an object of class \code{spatgeom}.
+#' @param x an object of class \code{spatgeom} or \code{spatgeom_group}.
 #' @param type a string: either \code{"curve"} (the default) or \code{"deriv"}.
 #'   The option \code{"curve"} plots the survival curve (with envelopes and,
 #'   if available, confidence intervals). The option \code{"deriv"} plots its
@@ -16,8 +15,8 @@
 #' @param font_size an integer controlling the font size in the plot.
 #' @param ... further arguments passed to the appropriate method.
 #'
-#' @return a \code{ggplot} object (or a \code{cowplot} grid for
-#'   \code{spatgeom_group} objects).
+#' @return a \code{ggplot} object for \code{spatgeom} inputs, or a
+#'   \code{cowplot} grid for \code{spatgeom_group} inputs.
 #'
 #' @examples
 #'
