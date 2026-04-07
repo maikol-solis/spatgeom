@@ -16,12 +16,18 @@ st_segment <- function(x) {
   segment <- dplyr::group_by(segment, l1)
   segment <- dplyr::mutate(segment, x1 = dplyr::lead(x), y1 = dplyr::lead(y))
   segment <- stats::na.omit(segment)
-  segment <- dplyr::mutate(segment,
-    geometry = purrr::pmap(
-      list(x, x1, y, y1),
-      ~ sf::st_linestring(matrix(c(..1, ..2, ..3, ..4), 2))
-    ),
-    geometry = sf::st_as_sfc(geometry)
+  segment <- dplyr::mutate(
+    segment,
+    geometry = sf::st_as_sfc(mapply(
+      function(px, px1, py, py1) {
+        sf::st_linestring(matrix(c(px, px1, py, py1), 2))
+      },
+      x,
+      x1,
+      y,
+      y1,
+      SIMPLIFY = FALSE
+    ))
   )
   segment <- dplyr::ungroup(segment)
   segment <- dplyr::select(segment, geometry)
@@ -31,9 +37,7 @@ st_segment <- function(x) {
 
 
 rot_mat <- function(angle) {
-  matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)),
-    nrow = 2, ncol = 2
-  )
+  matrix(c(cos(angle), -sin(angle), sin(angle), cos(angle)), nrow = 2, ncol = 2)
 }
 
 
