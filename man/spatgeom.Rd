@@ -25,10 +25,11 @@ spatgeom(
 (paired with \code{y}), or a single \eqn{n \times p} matrix when \code{y}
 is omitted. In the latter case \code{x} must have at least 2 columns: if
 exactly 2, they are used directly as 2D coordinates; if more than 2, set
-\code{use_umap = TRUE} to project to 2D first.}
+\code{reduce = "pca"}, \code{"umap"}, or \code{"tsne"} to project to 2D
+first.}
 
 \item{y}{numeric vector of responses. Optional: when omitted, \code{x} is
-treated as a single point cloud (see \code{use_umap}).}
+treated as a single point cloud (see \code{reduce}).}
 
 \item{scale_pts}{boolean to make the estimations with scaled variables.
 Default \code{FALSE}.}

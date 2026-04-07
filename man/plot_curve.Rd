@@ -11,7 +11,7 @@ plot_curve(x, ...)
 \method{plot_curve}{spatgeom}(x, type = "curve", font_size = 12, ...)
 }
 \arguments{
-\item{x}{an object of class \code{spatgeom}.}
+\item{x}{an object of class \code{spatgeom} or \code{spatgeom_group}.}
 
 \item{...}{further arguments passed to the appropriate method.}
 
@@ -23,18 +23,15 @@ numerical derivative.}
 \item{font_size}{an integer controlling the font size in the plot.}
 }
 \value{
-a \code{ggplot} object (or a \code{cowplot} grid for
-\code{spatgeom_group} objects).
+a \code{ggplot} object for \code{spatgeom} inputs, or a
+\code{cowplot} grid for \code{spatgeom_group} inputs.
 }
 \description{
-Plot method for objects of class \code{spatgeom}. This method plots the
-geometric survival (i.e. empty–space) curve against \eqn{\alpha} along with:
-\itemize{
-\item the envelope from the Monte Carlo simulation (if computed),
-\item the theoretical CSR curve, and
-\item if hypothesis testing was performed, a ribbon representing the confidence
-interval (and a mean curve) from the test.
-}
+S3 generic for plotting spatial geometry analysis results. Dispatches to
+\code{\link{plot_curve.spatgeom}} for \code{spatgeom} objects (producing a
+\code{ggplot} of survival curves or their derivatives), and to
+\code{\link{plot_curve.spatgeom_group}} for \code{spatgeom_group} objects
+(producing a side-by-side \code{cowplot} grid, one panel per group).
 }
 \examples{
 

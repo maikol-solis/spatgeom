@@ -44,7 +44,7 @@ xy <- donut_data(n = 50, a = -1, b = 1, theta = 2 * pi)
 
 # PCA — no extra packages needed
 emb <- reduce_dim(xy[, -1], method = "pca")
-dim(emb)  # 50 x 2
+dim(emb) # 50 x 2
 
 \donttest{
 # UMAP — requires uwot
