@@ -14,8 +14,10 @@
 #'   if available, confidence intervals). The option \code{"deriv"} plots its
 #'   numerical derivative.
 #' @param font_size an integer controlling the font size in the plot.
+#' @param ... further arguments passed to the appropriate method.
 #'
-#' @return a \code{ggplot} object.
+#' @return a \code{ggplot} object (or a \code{cowplot} grid for
+#'   \code{spatgeom_group} objects).
 #'
 #' @examples
 #'
@@ -43,7 +45,12 @@
 #'
 #' @export
 
-plot_curve <- function(x, type = "curve", font_size = 12) {
+plot_curve <- function(x, ...) UseMethod("plot_curve")
+
+#' @rdname plot_curve
+#' @export
+
+plot_curve.spatgeom <- function(x, type = "curve", font_size = 12, ...) {
   # Pacify linting warnings
   alpha <- geom_survival <- variable <- y <-
     ymin <- ymax <- lower_mean <- upper_mean <- theor <- mean <- NULL

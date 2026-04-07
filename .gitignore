@@ -5,3 +5,6 @@
 inst/doc
 *.RData
 *.Rproj
+inst/notes/
+.claude/
+inst/archive/

@@ -9,3 +9,4 @@
 ^\.pre-commit-config\.yaml$
 ^\.travis\.yml$
 ^cran-comments\.md$
+^\.claude$
