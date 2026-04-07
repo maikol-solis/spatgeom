@@ -79,3 +79,4 @@ repos:
 ci:
   autoupdate_schedule: monthly
   autoupdate_commit_msg: "chore: pre-commit autoupdate"
+  autofix_commit_msg: "chore: auto fixes from pre-commit.com hooks"
