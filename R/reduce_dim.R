@@ -50,7 +50,12 @@
 #'
 #' @export
 
-reduce_dim <- function(x, method = c("pca", "umap", "tsne"), n_components = 2L, ...) {
+reduce_dim <- function(
+  x,
+  method = c("pca", "umap", "tsne"),
+  n_components = 2L,
+  ...
+) {
   method <- match.arg(method)
   x <- as.matrix(x)
 
@@ -67,14 +72,17 @@ reduce_dim <- function(x, method = c("pca", "umap", "tsne"), n_components = 2L, 
     max_components <- min(ncol(x), nrow(x) - 1L)
     if (n_components > max_components) {
       stop(
-        "'n_components' = ", n_components,
+        "'n_components' = ",
+        n_components,
         " exceeds the maximum supported for method = 'pca' with this input (",
-        max_components, ")."
+        max_components,
+        ")."
       )
     }
   }
 
-  result <- switch(method,
+  result <- switch(
+    method,
     pca = {
       fit <- stats::prcomp(x, ...)
       fit$x[, seq_len(n_components), drop = FALSE]
