@@ -81,6 +81,10 @@ spatgeom_group <- function(x, by, ...) {
     dots[["y"]] <- NULL # will be reattached per-group below
   }
 
+  if (anyNA(by)) {
+    stop("'by' must not contain NA values.")
+  }
+
   groups <- unique(by)
 
   results <- lapply(groups, function(g) {
