@@ -161,7 +161,10 @@ spatgeom <- function(
 
   if (ncol(x) > 2 && reduce != "none") {
     reserved_reduce_args <- c("x", "method", "n_components")
-    conflicting_reduce_args <- intersect(names(reduce_args), reserved_reduce_args)
+    conflicting_reduce_args <- intersect(
+      names(reduce_args),
+      reserved_reduce_args
+    )
     if (length(conflicting_reduce_args) > 0) {
       stop(
         "'reduce_args' cannot override reserved arguments: ",
@@ -171,8 +174,11 @@ spatgeom <- function(
     }
 
     message(
-      "Reducing x from ", ncol(x),
-      " to 2 columns via method = '", reduce, "'."
+      "Reducing x from ",
+      ncol(x),
+      " to 2 columns via method = '",
+      reduce,
+      "'."
     )
     reduce_embedding <- do.call(
       reduce_dim,
@@ -182,7 +188,8 @@ spatgeom <- function(
     if (NCOL(reduce_embedding) != 2) {
       stop(
         "'reduce_dim' must return exactly 2 columns, but returned ",
-        NCOL(reduce_embedding), "."
+        NCOL(reduce_embedding),
+        "."
       )
     }
 
@@ -202,7 +209,9 @@ spatgeom <- function(
   if (missing(y)) {
     if (ncol(x) != 2) {
       stop(
-        "'x' has ", ncol(x), " columns and 'y' is missing. ",
+        "'x' has ",
+        ncol(x),
+        " columns and 'y' is missing. ",
         "Set 'reduce' to \"pca\", \"umap\", or \"tsne\" to project 'x' to ",
         "2 columns, or supply a 'y' argument."
       )
