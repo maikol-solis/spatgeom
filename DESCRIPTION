@@ -30,7 +30,6 @@ Imports:
     dplyr,
     lwgeom,
     cowplot
-RoxygenNote: 7.3.3
 Roxygen: list(markdown=TRUE)
 Depends: R (>= 3.6.0)
 Suggests:
@@ -39,3 +38,4 @@ Suggests:
     testthat (>= 2.1.0),
     uwot,
     Rtsne
+Config/roxygen2/version: 8.0.0
