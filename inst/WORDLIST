@@ -58,6 +58,7 @@ Rbuildignore
 README
 rmarkdown
 Roxygen
+roxygen
 roxygenize
 RoxygenNote
 Rtsne
