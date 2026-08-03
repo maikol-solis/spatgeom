@@ -9,12 +9,12 @@ repos:
         args: [] # optional: list of Conventional Commits types to allow e.g. [feat, fix, ci, chore, test]
   - repo: https://github.com/posit-dev/air-pre-commit
     # Air version
-    rev: 0.9.0
+    rev: 0.11.0
     hooks:
       # Run the formatter
       - id: air-format
   - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.3.9023
+    rev: v0.4.3.9030
     hooks:
       # - id: style-files
       #   args: [--style_pkg=styler, --style_fun=tidyverse_style]
