@@ -38,4 +38,4 @@ Suggests:
     testthat (>= 2.1.0),
     uwot,
     Rtsne
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.1
